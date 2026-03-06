@@ -1,0 +1,324 @@
+---
+title: Process Component
+description: Timeline-style process visualization showing 4 project phases
+---
+
+# Process Component
+
+The Process component presents Plugin Agency's 4-phase project methodology in a vertical timeline layout.
+
+## Overview
+
+This section:
+- Displays 4 project phases in chronological order
+- Uses a vertical timeline design
+- Shows phase categories, titles, and descriptions
+- Implements numbered steps with visual timeline
+- Features code-style category labels
+
+## Features
+
+- **Timeline Design**: Visual line connecting all phases
+- **Numbered Steps**: Sequential numbering with zero-padding
+- **Phase Categories**: Color-coded category labels
+- **Data-Driven**: Array-based rendering
+- **Clear Hierarchy**: Category → Title → Description structure
+
+## Props
+
+This component accepts no props.
+
+## Usage
+
+```jsx
+import Process from './components/Process';
+
+function App() {
+  return (
+    <>
+      {/* Other sections */}
+      <Process />
+      {/* More sections */}
+    </>
+  );
+}
+```
+
+## Process Steps Data
+
+The component uses a `STEPS` array with 4 phase definitions:
+
+```javascript
+const STEPS = [
+    {
+        category: "Fase de Descubrimiento",
+        title: "Diagnóstico y definición de objetivos",
+        description: "Analizamos tu contexto, público y competencia para identificar qué realmente importa y qué no aporta valor."
+    },
+    {
+        category: "Fase de Estrategia",
+        title: "Orden de marca y mensaje",
+        description: "Construimos una base coherente de identidad, propuesta de valor y narrativa para todos tus puntos de contacto."
+    },
+    {
+        category: "Fase de Ejecución",
+        title: "Implementación integrada",
+        description: "Desarrollamos tu presencia digital: sitio web optimizado, contenidos estratégicos y procesos automatizados."
+    },
+    {
+        category: "Fase de Crecimiento",
+        title: "Iteración y mejora continua",
+        description: "Medimos resultados, ajustamos la estrategia y escalamos lo que funciona para maximizar el impacto."
+    }
+];
+```
+
+## Code Implementation
+
+```jsx title="Process.jsx"
+const STEPS = [
+    {
+        category: "Fase de Descubrimiento",
+        title: "Diagnóstico y definición de objetivos",
+        description: "Analizamos tu contexto, público y competencia para identificar qué realmente importa y qué no aporta valor."
+    },
+    {
+        category: "Fase de Estrategia",
+        title: "Orden de marca y mensaje",
+        description: "Construimos una base coherente de identidad, propuesta de valor y narrativa para todos tus puntos de contacto."
+    },
+    {
+        category: "Fase de Ejecución",
+        title: "Implementación integrada",
+        description: "Desarrollamos tu presencia digital: sitio web optimizado, contenidos estratégicos y procesos automatizados."
+    },
+    {
+        category: "Fase de Crecimiento",
+        title: "Iteración y mejora continua",
+        description: "Medimos resultados, ajustamos la estrategia y escalamos lo que funciona para maximizar el impacto."
+    }
+];
+
+const Process = () => {
+    return (
+        <section id="process" className="process-section section-divider">
+            <div className="container">
+                <h2 className="section-title">El <span>proceso</span></h2>
+                <p style={{ color: 'var(--text-2)', textAlign: 'center', maxWidth: '520px', margin: '-2rem auto 3.5rem', fontSize: '0.95rem' }}>
+                    Un proceso claro y estratégico que transforma ideas en resultados medibles.
+                </p>
+                <div className="process-timeline">
+                    <div className="process-line" />
+                    {STEPS.map((step, i) => (
+                        <div key={i} className="process-item">
+                            <div className="process-num">{String(i + 1).padStart(2, '0')}</div>
+                            <div className="process-body">
+                                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--cyan)', marginBottom: '0.4rem', opacity: 0.8 }}>{step.category}</p>
+                                <h3>{step.title}</h3>
+                                <p>{step.description}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default Process;
+```
+
+## The 4 Phases
+
+### 1. Fase de Descubrimiento
+**Title**: Diagnóstico y definición de objetivos
+
+**Description**: Analyzing context, audience, and competition to identify what truly matters and what doesn't add value.
+
+**Purpose**: Discovery and objective setting
+
+### 2. Fase de Estrategia
+**Title**: Orden de marca y mensaje
+
+**Description**: Building a coherent foundation of identity, value proposition, and narrative for all touchpoints.
+
+**Purpose**: Brand and message organization
+
+### 3. Fase de Ejecución
+**Title**: Implementación integrada
+
+**Description**: Developing digital presence: optimized website, strategic content, and automated processes.
+
+**Purpose**: Integrated implementation
+
+### 4. Fase de Crecimiento
+**Title**: Iteración y mejora continua
+
+**Description**: Measuring results, adjusting strategy, and scaling what works to maximize impact.
+
+**Purpose**: Iteration and continuous improvement
+
+<Note>
+The process follows a logical progression: Discovery → Strategy → Execution → Growth
+</Note>
+
+## Timeline Design
+
+The component uses a vertical timeline with these elements:
+
+### Timeline Line
+
+```jsx
+<div className="process-line" />
+```
+
+A vertical line connecting all phases, providing visual continuity.
+
+### Step Numbers
+
+Numbers are formatted with zero-padding:
+
+```javascript
+String(i + 1).padStart(2, '0')
+```
+
+Produces: `01`, `02`, `03`, `04`
+
+### Step Structure
+
+Each step contains:
+1. **Number** - Sequential identifier
+2. **Category** - Phase label (monospace, cyan color)
+3. **Title** - Phase name (heading)
+4. **Description** - Phase explanation
+
+## Styling Classes
+
+- `.process-section` - Main section container
+- `.section-divider` - Visual separator between sections
+- `.section-title` - Main heading with highlighted span
+- `.process-timeline` - Timeline container
+- `.process-line` - Vertical connecting line
+- `.process-item` - Individual process step
+- `.process-num` - Step number circle
+- `.process-body` - Step content container
+
+## Layout Structure
+
+1. **Header Section**
+   - Title: "El proceso" with highlighted "proceso"
+   - Subtitle: Clear and strategic process description (max-width: 520px, centered)
+
+2. **Timeline**
+   - Vertical line connecting all steps
+   - 4 process items in sequence
+
+3. **Each Process Item**:
+   ```
+   [01] ── Fase de Descubrimiento
+            Diagnóstico y definición de objetivos
+            Description text...
+   ```
+
+## Visual Design
+
+### Category Label Styling
+
+Inline styles for category labels:
+
+```jsx
+style={{
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.72rem',
+    color: 'var(--cyan)',
+    marginBottom: '0.4rem',
+    opacity: 0.8
+}}
+```
+
+**Design choices**:
+- Monospace font for technical aesthetic
+- Small size (0.72rem) for hierarchy
+- Cyan color for brand consistency
+- Reduced opacity for subtle appearance
+
+### Subtitle Styling
+
+Inline styles for intro text:
+
+```jsx
+style={{
+    color: 'var(--text-2)',
+    textAlign: 'center',
+    maxWidth: '520px',
+    margin: '-2rem auto 3.5rem',
+    fontSize: '0.95rem'
+}}
+```
+
+**Design choices**:
+- Negative top margin pulls it closer to title
+- Centered with max-width constraint
+- Secondary text color
+- Larger bottom margin for spacing
+
+## Responsive Behavior
+
+- **Desktop**: Full timeline with clear spacing
+- **Tablet**: Timeline may adjust spacing
+- **Mobile**: Timeline adapts, possibly with reduced indentation
+
+## Content Strategy
+
+Each phase description follows the pattern:
+- Clear action verb (Analizamos, Construimos, Desarrollamos, Medimos)
+- Specific activities
+- Clear outcome or purpose
+
+## Timeline Visualization
+
+```
+     │
+    01 ── Fase de Descubrimiento
+     │    Diagnóstico y definición de objetivos
+     │    Description...
+     │
+    02 ── Fase de Estrategia
+     │    Orden de marca y mensaje
+     │    Description...
+     │
+    03 ── Fase de Ejecución
+     │    Implementación integrada
+     │    Description...
+     │
+    04 ── Fase de Crecimiento
+     │    Iteración y mejora continua
+     │    Description...
+     │
+```
+
+## Dependencies
+
+- React (no external packages)
+- Pure functional component
+- No state management
+
+<Info>
+This is a pure presentational component focused on clear visual communication of the project methodology.
+</Info>
+
+## Integration with Other Components
+
+- **WorkPacks**: Each pack follows these 4 phases
+- **Method**: The process implements the 5-layer system
+- **Contact**: Users can start the process by contacting the agency
+
+## CSS Variables Used
+
+- `var(--text-2)` - Secondary text color
+- `var(--font-mono)` - Monospace font family
+- `var(--cyan)` - Brand cyan color
+
+<Warning>
+Ensure these CSS variables are defined in your global styles for consistent rendering.
+</Warning>

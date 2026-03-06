@@ -1,0 +1,180 @@
+---
+title: Navbar Component
+description: Navigation bar with scroll behavior, mobile menu, and smooth anchor scrolling
+---
+
+# Navbar Component
+
+The Navbar component provides a responsive navigation header with scroll-based styling, mobile hamburger menu, and smooth scrolling to page sections.
+
+## Overview
+
+The Navbar is a sticky navigation component that:
+- Changes appearance when scrolled
+- Provides mobile-responsive hamburger menu
+- Implements smooth scrolling to anchor sections
+- Handles click-outside events to close mobile menu
+- Displays the Plugin Agency logo
+
+## Features
+
+- **Scroll Detection**: Applies `scrolled` class when user scrolls past 50px
+- **Mobile Menu**: Toggle hamburger menu with click-outside-to-close behavior
+- **Smooth Scrolling**: Custom anchor link handling with 80px offset for fixed navbar
+- **State Management**: Uses React hooks (useState, useEffect, useRef)
+- **Responsive Design**: Mobile-first design with hamburger menu
+
+## Props
+
+This component accepts no props.
+
+## Usage
+
+```jsx
+import Navbar from './components/Navbar';
+
+function App() {
+  return (
+    <>
+      <Navbar />
+      {/* Rest of your page */}
+    </>
+  );
+}
+```
+
+## Code Implementation
+
+```jsx title="Navbar.jsx"
+import { useState, useEffect, useRef } from 'react';
+
+const Navbar = () => {
+    const [scrolled, setScrolled] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const menuRef = useRef(null);
+
+    useEffect(() => {
+        const handleScroll = () => setScrolled(window.scrollY > 50);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (menuRef.current && !menuRef.current.contains(e.target)) {
+                setIsMenuOpen(false);
+            }
+        };
+        if (isMenuOpen) document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [isMenuOpen]);
+
+    const handleLinkClick = (e) => {
+        e.preventDefault();
+        const targetId = e.currentTarget.getAttribute('href');
+        const el = document.querySelector(targetId);
+        if (el) {
+            const offset = el.getBoundingClientRect().top + window.pageYOffset - 80;
+            window.scrollTo({ top: offset, behavior: 'smooth' });
+        }
+        setIsMenuOpen(false);
+    };
+
+    return (
+        <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} ref={menuRef}>
+            <div className="container navbar-container">
+                <div className="logo">
+                    <img src="/assets/logo/logoPlugin.webp" alt="Plugin Agency" style={{ height: '52px', width: 'auto' }} />
+                </div>
+
+                <button
+                    className={`hamburger ${isMenuOpen ? 'active' : ''}`}
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    aria-label="Toggle menu"
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
+                    <li><a href="#hero" onClick={handleLinkClick}>Inicio</a></li>
+                    <li><a href="#about" onClick={handleLinkClick}>Nosotros</a></li>
+                    <li><a href="#services" onClick={handleLinkClick}>Servicios</a></li>
+                    <li><a href="#workpacks" onClick={handleLinkClick}>Packs</a></li>
+                    <li><a href="#faq" onClick={handleLinkClick}>FAQ</a></li>
+                    <li><a href="#contact" className="nav-cta" onClick={handleLinkClick}>Contacto</a></li>
+                </ul>
+            </div>
+        </nav>
+    );
+};
+
+export default Navbar;
+```
+
+## Navigation Links
+
+The navbar includes links to:
+- **Inicio** (#hero)
+- **Nosotros** (#about)
+- **Servicios** (#services)
+- **Packs** (#workpacks)
+- **FAQ** (#faq)
+- **Contacto** (#contact) - styled as CTA button
+
+## Styling Classes
+
+- `.navbar` - Base navbar styles
+- `.navbar.scrolled` - Applied when scrolled past 50px
+- `.hamburger` - Mobile menu toggle button
+- `.hamburger.active` - Active state for hamburger
+- `.nav-links` - Navigation links container
+- `.nav-links.active` - Mobile menu open state
+- `.nav-cta` - CTA styling for contact link
+
+## Behavior Details
+
+### Scroll Detection
+
+The navbar adds a `scrolled` class when the user scrolls more than 50px from the top:
+
+```javascript
+const handleScroll = () => setScrolled(window.scrollY > 50);
+```
+
+### Click Outside Handler
+
+Closes the mobile menu when clicking outside:
+
+```javascript
+const handleClickOutside = (e) => {
+    if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setIsMenuOpen(false);
+    }
+};
+```
+
+### Smooth Scrolling with Offset
+
+Calculates scroll position accounting for the fixed navbar height (80px):
+
+```javascript
+const offset = el.getBoundingClientRect().top + window.pageYOffset - 80;
+window.scrollTo({ top: offset, behavior: 'smooth' });
+```
+
+<Note>
+The 80px offset prevents content from being hidden behind the fixed navbar when scrolling to anchor links.
+</Note>
+
+## Responsive Behavior
+
+- **Desktop**: Horizontal navigation links
+- **Mobile**: Hamburger menu with slide-in/slide-out navigation
+- **Accessibility**: Proper `aria-label` on hamburger button
+
+## Dependencies
+
+- React hooks: `useState`, `useEffect`, `useRef`
+- No external libraries required

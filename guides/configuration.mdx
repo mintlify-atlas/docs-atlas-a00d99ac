@@ -1,0 +1,396 @@
+---
+title: 'Configuration Guide'
+description: 'Configure Vite, ESLint, and other project settings for Plugin Agency'
+icon: 'gear'
+---
+
+## Overview
+
+This guide covers all configuration files in the Plugin Agency project, including Vite build settings, ESLint rules, package scripts, and HTML metadata.
+
+## Vite Configuration
+
+The project uses Vite as the build tool and development server.
+
+### vite.config.js
+
+```javascript vite.config.js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    host: true,
+    allowedHosts: true
+  }
+})
+```
+
+### Configuration Options
+
+<Tabs>
+  <Tab title="Basic Setup">
+    **Plugins**
+    - `@vitejs/plugin-react` - Enables React Fast Refresh and JSX support
+    - Automatic JSX transformation (no React import needed)
+    
+    **Server Settings**
+    - `host: true` - Expose server on all network interfaces
+    - `allowedHosts: true` - Allow connections from any host (useful for containerized environments)
+  </Tab>
+
+  <Tab title="Custom Port">
+    To change the development server port:
+    
+    ```javascript vite.config.js
+    export default defineConfig({
+      plugins: [react()],
+      server: {
+        host: true,
+        allowedHosts: true,
+        port: 3000  // Default is 5173
+      }
+    })
+    ```
+  </Tab>
+
+  <Tab title="Path Aliases">
+    Add import aliases for cleaner imports:
+    
+    ```javascript vite.config.js
+    import path from 'path'
+    
+    export default defineConfig({
+      plugins: [react()],
+      resolve: {
+        alias: {
+          '@': path.resolve(__dirname, './src'),
+          '@components': path.resolve(__dirname, './src/components'),
+          '@assets': path.resolve(__dirname, './src/assets')
+        }
+      }
+    })
+    ```
+    
+    Usage:
+    ```javascript
+    import Hero from '@components/Hero'
+    import logo from '@assets/logo.webp'
+    ```
+  </Tab>
+
+  <Tab title="Build Options">
+    Customize the production build:
+    
+    ```javascript vite.config.js
+    export default defineConfig({
+      plugins: [react()],
+      build: {
+        outDir: 'dist',
+        sourcemap: false,
+        minify: 'terser',
+        chunkSizeWarningLimit: 1000
+      }
+    })
+    ```
+  </Tab>
+</Tabs>
+
+## ESLint Configuration
+
+The project uses ESLint 9 with the new flat config format.
+
+### eslint.config.js
+
+```javascript eslint.config.js
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+])
+```
+
+### Configuration Breakdown
+
+<AccordionGroup>
+  <Accordion title="Global Ignores">
+    ```javascript
+    globalIgnores(['dist'])
+    ```
+    
+    Excludes the `dist` directory from linting (build output).
+  </Accordion>
+
+  <Accordion title="File Patterns">
+    ```javascript
+    files: ['**/*.{js,jsx}']
+    ```
+    
+    Applies rules to all JavaScript and JSX files in the project.
+  </Accordion>
+
+  <Accordion title="Extended Configs">
+    - **`js.configs.recommended`** - Core JavaScript best practices
+    - **`reactHooks.configs.flat.recommended`** - React Hooks rules
+    - **`reactRefresh.configs.vite`** - Vite HMR compatibility rules
+  </Accordion>
+
+  <Accordion title="Language Options">
+    ```javascript
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    }
+    ```
+    
+    - **ECMAScript 2020** syntax support
+    - **Browser globals** (window, document, etc.)
+    - **JSX** enabled
+    - **ES Modules** support
+  </Accordion>
+
+  <Accordion title="Custom Rules">
+    ```javascript
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    }
+    ```
+    
+    Allows uppercase variables (constants) to be unused without errors. Useful for exported constants or component names.
+  </Accordion>
+</AccordionGroup>
+
+### Running ESLint
+
+```bash
+# Check for linting errors
+npm run lint
+
+# Auto-fix issues
+npm run lint -- --fix
+```
+
+## Package.json Scripts
+
+### Available Scripts
+
+```json package.json
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  }
+}
+```
+
+<CardGroup cols={2}>
+  <Card title="npm run dev" icon="code">
+    Starts development server
+    - Hot Module Replacement (HMR)
+    - Fast Refresh for React
+    - Runs on port 5173
+  </Card>
+  
+  <Card title="npm run build" icon="hammer">
+    Creates production build
+    - Minified code
+    - Optimized assets
+    - Output to `dist/`
+  </Card>
+  
+  <Card title="npm run lint" icon="circle-check">
+    Runs ESLint checks
+    - Validates code quality
+    - Checks React patterns
+    - Reports errors/warnings
+  </Card>
+  
+  <Card title="npm run preview" icon="eye">
+    Preview production build
+    - Serves `dist/` folder
+    - Test before deployment
+    - Runs on port 4173
+  </Card>
+</CardGroup>
+
+## HTML Meta Tags & SEO
+
+The `index.html` file contains comprehensive SEO and social media metadata.
+
+### Basic SEO Tags
+
+```html index.html
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Ordenamos tu marca, contenidos y tecnología para ganar claridad y visibilidad. Branding, diseño web, automatización e IA aplicada." />
+<meta name="keywords" content="agencia digital en uruguay, agencia de marketing digital uruguay, branding uruguay, diseño web uruguay, automatización de procesos, contenidos para marcas, agencia de contenidos, Plugin Agency" />
+<meta name="author" content="Plugin Agency" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://plugin.uy/" />
+<title>Agencia digital en Uruguay | Marca, Web y Automatización</title>
+```
+
+### Open Graph (Facebook)
+
+```html index.html
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://plugin.uy/" />
+<meta property="og:title" content="Agencia digital en Uruguay | Marca, Web y Automatización" />
+<meta property="og:description" content="Ordenamos tu marca, contenidos y tecnología para ganar claridad y visibilidad." />
+<meta property="og:image" content="https://plugin.uy/assets/logo/logoPlugin.webp" />
+<meta property="og:locale" content="es_UY" />
+<meta property="og:site_name" content="Plugin Agency" />
+```
+
+### Twitter Card
+
+```html index.html
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content="https://plugin.uy/" />
+<meta name="twitter:title" content="Agencia digital en Uruguay | Marca, Web y Automatización" />
+<meta name="twitter:description" content="Ordenamos tu marca, contenidos y tecnología para ganar claridad y visibilidad." />
+<meta name="twitter:image" content="https://plugin.uy/assets/logo/logoPlugin.webp" />
+```
+
+### Schema.org Structured Data
+
+```html index.html
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Plugin Agency",
+  "url": "https://plugin.uy",
+  "logo": "https://plugin.uy/assets/logo/logoPlugin.webp",
+  "description": "Agencia digital en Uruguay para ordenar marca, contenido y tecnología.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "UY"
+  },
+  "service": [
+    {
+      "@type": "Service",
+      "name": "Estrategia, Marca y Comunicación",
+      "description": "..."
+    }
+  ]
+}
+</script>
+```
+
+<Note>
+  The structured data helps search engines understand your business services and improves rich snippet display in search results.
+</Note>
+
+### Google Tag Manager
+
+```html index.html
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-T94PN74Z');</script>
+```
+
+<Warning>
+  Replace `GTM-T94PN74Z` with your own Google Tag Manager ID if forking this project.
+</Warning>
+
+### Performance Optimization
+
+```html index.html
+<!-- Preconnect hints for faster third-party loading -->
+<link rel="preconnect" href="https://www.google.com" crossorigin>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+```
+
+Preconnect hints establish early connections to third-party domains, reducing latency for:
+- Google Fonts
+- Google reCAPTCHA
+- Analytics scripts
+
+## Dependencies
+
+### Production Dependencies
+
+```json package.json
+{
+  "dependencies": {
+    "@vercel/analytics": "^1.6.1",
+    "lucide-react": "^0.575.0",
+    "nodemailer": "^7.0.13",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-google-recaptcha": "^3.1.0"
+  }
+}
+```
+
+- **@vercel/analytics** - Vercel Analytics integration
+- **lucide-react** - Icon library
+- **nodemailer** - Email sending for contact form
+- **react** - Core React library
+- **react-dom** - React DOM rendering
+- **react-google-recaptcha** - reCAPTCHA component
+
+### Dev Dependencies
+
+```json package.json
+{
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "vite": "^7.2.4"
+  }
+}
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Styling Guide" icon="paintbrush" href="/guides/styling">
+    Learn about CSS architecture and theming
+  </Card>
+  <Card title="Deployment" icon="rocket" href="/guides/deployment">
+    Deploy to Vercel with proper configuration
+  </Card>
+</CardGroup>

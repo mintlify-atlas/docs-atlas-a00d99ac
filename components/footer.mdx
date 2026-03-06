@@ -1,0 +1,342 @@
+---
+title: Footer Component
+description: Site footer with navigation links, social media, and contact information
+---
+
+# Footer Component
+
+The Footer component provides the site's footer with navigation links, service links, contact information, and social media icons.
+
+## Overview
+
+This section:
+- Displays Plugin Agency branding and tagline
+- Organizes links into 3 columns (Navigation, Services, Contact)
+- Shows social media links (Instagram, LinkedIn, X/Twitter)
+- Includes copyright notice with dynamic year
+- Uses inline SVG for social icons
+
+## Features
+
+- **Dynamic Year**: Automatically updates copyright year
+- **Four-Column Layout**: Brand + 3 link groups
+- **Social Media Icons**: SVG icons with hover states
+- **Responsive Grid**: Adapts to screen sizes
+- **External Links**: Proper `target="_blank"` and `rel="noreferrer"`
+- **Anchor Navigation**: Internal links to page sections
+
+## Props
+
+This component accepts no props.
+
+## Usage
+
+```jsx
+import Footer from './components/Footer';
+
+function App() {
+  return (
+    <>
+      {/* Main content */}
+      <Footer />
+    </>
+  );
+}
+```
+
+## Code Implementation
+
+```jsx title="Footer.jsx"
+const Footer = () => {
+    const year = new Date().getFullYear();
+
+    return (
+        <footer className="footer">
+            <div className="container">
+                <div className="footer-inner">
+                    <div className="footer-brand">
+                        <img src="/assets/logo/logoPlugin.webp" alt="Plugin Agency" style={{ height: '44px', width: 'auto', marginBottom: '0.75rem' }} />
+                        <p className="footer-tagline">Agencia digital en Uruguay para ordenar marca, contenido y tecnología.</p>
+                    </div>
+
+                    <div className="footer-links-group">
+                        <h4>Navegación</h4>
+                        <ul>
+                            <li><a href="#hero">Inicio</a></li>
+                            <li><a href="#about">Nosotros</a></li>
+                            <li><a href="#services">Servicios</a></li>
+                            <li><a href="#workpacks">Packs</a></li>
+                            <li><a href="#faq">FAQ</a></li>
+                        </ul>
+                    </div>
+
+                    <div className="footer-links-group">
+                        <h4>Servicios</h4>
+                        <ul>
+                            <li><a href="#services">Estrategia y Marca</a></li>
+                            <li><a href="#services">Diseño Web</a></li>
+                            <li><a href="#services">Contenidos</a></li>
+                            <li><a href="#services">Automatización</a></li>
+                        </ul>
+                    </div>
+
+                    <div className="footer-links-group">
+                        <h4>Contacto</h4>
+                        <ul>
+                            <li><a href="mailto:info@plugin.uy">info@plugin.uy</a></li>
+                            <li><a href="https://plugin.uy" target="_blank" rel="noreferrer">plugin.uy</a></li>
+                            <li style={{ color: 'var(--text-3)', fontSize: '0.88rem' }}>Punta del Este, Uruguay</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div className="footer-bottom">
+                    <p className="footer-copy">© {year} Plugin Agency — Todos los derechos reservados.</p>
+                    <div className="footer-socials">
+                        {/* Instagram */}
+                        <a href="https://instagram.com/plugin.agency.uy/" target="_blank" rel="noreferrer" className="footer-social-link" aria-label="Instagram">
+                            <svg>{/* Instagram icon */}</svg>
+                        </a>
+                        {/* LinkedIn */}
+                        <a href="https://linkedin.com/company/pluginuy" target="_blank" rel="noreferrer" className="footer-social-link" aria-label="LinkedIn">
+                            <svg>{/* LinkedIn icon */}</svg>
+                        </a>
+                        {/* X (Twitter) */}
+                        <a href="https://x.com/PluginUy" target="_blank" rel="noreferrer" className="footer-social-link" aria-label="X (Twitter)">
+                            <svg>{/* X icon */}</svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    );
+};
+
+export default Footer;
+```
+
+## Footer Structure
+
+### Four-Column Layout
+
+1. **Brand Column**
+   - Logo (44px height)
+   - Tagline
+
+2. **Navigation Column**
+   - Inicio (#hero)
+   - Nosotros (#about)
+   - Servicios (#services)
+   - Packs (#workpacks)
+   - FAQ (#faq)
+
+3. **Services Column**
+   - Estrategia y Marca (#services)
+   - Diseño Web (#services)
+   - Contenidos (#services)
+   - Automatización (#services)
+
+4. **Contact Column**
+   - Email: info@plugin.uy
+   - Website: plugin.uy
+   - Location: Punta del Este, Uruguay
+
+<Note>
+All service links point to #services section. Consider adding section anchors for individual services if needed.
+</Note>
+
+## Dynamic Copyright Year
+
+```javascript
+const year = new Date().getFullYear();
+```
+
+Automatically updates the copyright year:
+
+```jsx
+<p className="footer-copy">© {year} Plugin Agency — Todos los derechos reservados.</p>
+```
+
+Output: "© 2024 Plugin Agency — Todos los derechos reservados."
+
+## Social Media Links
+
+### Instagram
+**URL**: https://instagram.com/plugin.agency.uy/
+
+```jsx
+<a href="https://instagram.com/plugin.agency.uy/" target="_blank" rel="noreferrer" className="footer-social-link" aria-label="Instagram">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+    </svg>
+</a>
+```
+
+### LinkedIn
+**URL**: https://linkedin.com/company/pluginuy
+
+```jsx
+<a href="https://linkedin.com/company/pluginuy" target="_blank" rel="noreferrer" className="footer-social-link" aria-label="LinkedIn">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+        <rect x="2" y="9" width="4" height="12"></rect>
+        <circle cx="4" cy="4" r="2"></circle>
+    </svg>
+</a>
+```
+
+### X (formerly Twitter)
+**URL**: https://x.com/PluginUy
+
+```jsx
+<a href="https://x.com/PluginUy" target="_blank" rel="noreferrer" className="footer-social-link" aria-label="X (Twitter)">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.743l7.73-8.835L1.254 2.25H8.08l4.259 5.629L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
+    </svg>
+</a>
+```
+
+<Info>
+X (Twitter) icon uses filled style while Instagram and LinkedIn use outlined style for visual variety.
+</Info>
+
+## Link Types
+
+### Internal Anchor Links
+
+Links to page sections:
+
+```jsx
+<a href="#hero">Inicio</a>
+<a href="#about">Nosotros</a>
+<a href="#services">Servicios</a>
+```
+
+### External Links
+
+Links to external sites with security attributes:
+
+```jsx
+<a href="https://plugin.uy" target="_blank" rel="noreferrer">plugin.uy</a>
+```
+
+**Attributes**:
+- `target="_blank"` - Opens in new tab
+- `rel="noreferrer"` - Security and privacy protection
+
+### Email Link
+
+```jsx
+<a href="mailto:info@plugin.uy">info@plugin.uy</a>
+```
+
+Opens default email client with pre-filled recipient.
+
+<Warning>
+Always use `rel="noreferrer"` (or `rel="noopener noreferrer"`) with `target="_blank"` to prevent security vulnerabilities.
+</Warning>
+
+## Styling Classes
+
+- `.footer` - Main footer container
+- `.footer-inner` - Four-column grid container
+- `.footer-brand` - Brand/logo column
+- `.footer-tagline` - Tagline text
+- `.footer-links-group` - Link group column
+- `.footer-bottom` - Bottom section (copyright + socials)
+- `.footer-copy` - Copyright text
+- `.footer-socials` - Social media icons container
+- `.footer-social-link` - Individual social icon link
+
+## Layout Visualization
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ [Logo]              Navegación       Servicios       Contacto        │
+│ Agencia digital     • Inicio         • Estrategia     info@plugin.uy  │
+│ en Uruguay para     • Nosotros       • Diseño Web    plugin.uy       │
+│ ordenar marca...    • Servicios      • Contenidos     Punta del Este  │
+│                     • Packs          • Automatiz...   Uruguay         │
+│                     • FAQ                                             │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ © 2024 Plugin Agency — Todos los derechos reservados.        [IG][LI][X] │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Responsive Behavior
+
+- **Desktop**: Four columns side by side
+- **Tablet**: 2x2 grid or stacked
+- **Mobile**: Single column stack
+- **Bottom Section**: Flexbox that may wrap on mobile
+
+## Accessibility Features
+
+- `aria-label` on social links for screen readers
+- Semantic `<footer>` element
+- Proper heading hierarchy (h4 for group titles)
+- Clear link text (no "click here" or ambiguous text)
+
+<Info>
+All social links include descriptive `aria-label` attributes for accessibility.
+</Info>
+
+## Logo Styling
+
+Logo uses inline styles:
+
+```jsx
+style={{ height: '44px', width: 'auto', marginBottom: '0.75rem' }}
+```
+
+**Styling choices**:
+- Fixed height (44px) for consistency
+- Auto width to maintain aspect ratio
+- Bottom margin for spacing from tagline
+
+## Contact Information
+
+- **Email**: info@plugin.uy
+- **Website**: https://plugin.uy
+- **Location**: Punta del Este, Uruguay
+
+### Location Styling
+
+Location text uses different styling:
+
+```jsx
+<li style={{ color: 'var(--text-3)', fontSize: '0.88rem' }}>Punta del Este, Uruguay</li>
+```
+
+Not a link, just informational text in lighter color.
+
+## Dependencies
+
+- React (no external packages)
+- Pure functional component
+- No state management
+- Inline SVG icons
+
+## CSS Variables Used
+
+- `var(--text-3)` - Tertiary text color (for location)
+
+<Note>
+The footer is purely presentational with no interactivity beyond standard link behavior.
+</Note>
+
+## Social Media Profile URLs
+
+Update these URLs if social media handles change:
+
+```javascript
+const SOCIAL_LINKS = {
+    instagram: 'https://instagram.com/plugin.agency.uy/',
+    linkedin: 'https://linkedin.com/company/pluginuy',
+    twitter: 'https://x.com/PluginUy'
+};
+```
+
+Consider extracting these to a configuration file for easier maintenance.

@@ -1,0 +1,239 @@
+---
+title: 'Send Email API'
+description: 'Contact form email sending endpoint with reCAPTCHA verification'
+---
+
+## Overview
+
+The Send Email API endpoint processes contact form submissions and sends emails via SMTP. It includes reCAPTCHA verification to prevent spam and automated submissions.
+
+## Endpoint
+
+```
+POST /api/send-email
+```
+
+## Authentication
+
+This endpoint uses Google reCAPTCHA v2 for bot protection. A valid captcha token must be included in every request.
+
+<Warning>
+  Requests without a valid `captchaToken` will be rejected with a 400 error.
+</Warning>
+
+## Request Parameters
+
+<ParamField path="nombre" type="string" required>
+  First name of the contact form submitter.
+</ParamField>
+
+<ParamField path="apellido" type="string">
+  Last name of the contact form submitter. Optional but included in email subject.
+</ParamField>
+
+<ParamField path="email" type="string" required>
+  Email address of the submitter. Used as the `replyTo` address in the outgoing email.
+</ParamField>
+
+<ParamField path="telefono" type="string">
+  Phone number of the submitter. Optional field, numeric only.
+</ParamField>
+
+<ParamField path="message" type="string" required>
+  The message body from the contact form.
+</ParamField>
+
+<ParamField path="captchaToken" type="string" required>
+  The reCAPTCHA token obtained from the frontend after user verification.
+</ParamField>
+
+## SMTP Configuration
+
+The endpoint uses Nodemailer with the following SMTP settings:
+
+- **Host**: `mail.plugin.uy`
+- **Port**: `465`
+- **Secure**: `true` (SSL/TLS)
+- **Authentication**: Uses `EMAIL_USER` and `EMAIL_PASS` environment variables
+
+### Email Recipients
+
+Recipients are configured via the `EMAIL_TO` environment variable. Multiple recipients can be specified as a comma-separated list:
+
+```bash
+EMAIL_TO=info@plugin.uy,salvacastro06@gmail.com
+```
+
+<Note>
+  If `EMAIL_TO` is not set, emails default to: `info@plugin.uy` and `salvacastro06@gmail.com`
+</Note>
+
+## Response
+
+### Success Response
+
+<ResponseField name="message" type="string">
+  Success confirmation message.
+</ResponseField>
+
+**Example:**
+
+```json
+{
+  "message": "Email enviado con éxito"
+}
+```
+
+### Error Responses
+
+<ResponseField name="error" type="string">
+  Error message describing what went wrong.
+</ResponseField>
+
+#### 400 Bad Request - Missing Fields
+
+```json
+{
+  "error": "Faltan campos obligatorios o el captcha"
+}
+```
+
+Returned when `nombre`, `email`, `message`, or `captchaToken` are missing.
+
+#### 400 Bad Request - Invalid Captcha
+
+```json
+{
+  "error": "Captcha inválido"
+}
+```
+
+Returned when reCAPTCHA verification fails.
+
+#### 405 Method Not Allowed
+
+```
+Method ${METHOD} Not Allowed
+```
+
+Returned when using any HTTP method other than POST.
+
+#### 500 Internal Server Error - Captcha Verification
+
+```json
+{
+  "error": "Error al verificar captcha"
+}
+```
+
+Returned when there's a network or server error during captcha verification.
+
+#### 500 Internal Server Error - Email Sending
+
+```json
+{
+  "error": "Error al enviar el email"
+}
+```
+
+Returned when the SMTP server fails to send the email.
+
+## Example Request
+
+```bash
+curl -X POST https://plugin.uy/api/send-email \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nombre": "Juan",
+    "apellido": "Perez",
+    "email": "juan.perez@example.com",
+    "telefono": "099123456",
+    "message": "Me interesa conocer más sobre sus servicios",
+    "captchaToken": "03AGdBq24...your-recaptcha-token"
+  }'
+```
+
+## Example Success Response
+
+```json
+{
+  "message": "Email enviado con éxito"
+}
+```
+
+**Status Code**: `200 OK`
+
+## Example Error Response
+
+```json
+{
+  "error": "Faltan campos obligatorios o el captcha"
+}
+```
+
+**Status Code**: `400 Bad Request`
+
+## Email Format
+
+The sent email includes both plain text and HTML versions:
+
+### Subject Line
+
+```
+Nuevo mensaje de contacto de: {nombre} {apellido}
+```
+
+### Email Headers
+
+- **From**: `"Plugin Contacto" <{EMAIL_USER}>`
+- **Reply-To**: `{email}` (submitter's email)
+- **To**: Recipients from `EMAIL_TO` environment variable
+
+### Email Body
+
+The HTML email includes:
+
+- Sender's full name
+- Email address
+- Phone number (if provided)
+- Message content
+
+<Info>
+  The `replyTo` header is set to the submitter's email, allowing direct replies from your email client.
+</Info>
+
+## Environment Variables
+
+Required environment variables:
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `RECAPTCHA_SECRET_KEY` | Google reCAPTCHA v2 secret key | Yes |
+| `EMAIL_USER` | SMTP authentication username | Yes |
+| `EMAIL_PASS` | SMTP authentication password | Yes |
+| `EMAIL_TO` | Comma-separated list of recipient emails | No (defaults exist) |
+
+## Error Handling
+
+The endpoint implements comprehensive error handling:
+
+1. **Validation Errors**: Checks for required fields before processing
+2. **Captcha Verification**: Validates token with Google's API
+3. **SMTP Errors**: Catches and logs email sending failures
+4. **Method Validation**: Only accepts POST requests
+
+<Warning>
+  All errors are logged to the server console with `console.error()` for debugging purposes.
+</Warning>
+
+## Security Considerations
+
+- reCAPTCHA v2 prevents automated bot submissions
+- SMTP authentication uses secure SSL/TLS (port 465)
+- Email addresses are validated on the frontend before submission
+- The authenticated email user is always used as the sender to prevent spoofing
+- User's email is set as `replyTo`, not `from`, for security
+
+## Related
+
+- [reCAPTCHA Integration](/api/recaptcha) - Learn how to integrate reCAPTCHA on the frontend

@@ -1,0 +1,238 @@
+---
+title: 'Deployment Guide'
+description: 'Learn how to deploy your Plugin Agency site to Vercel with proper configuration'
+icon: 'rocket'
+---
+
+## Overview
+
+This guide walks you through deploying the Plugin Agency site to Vercel, including build configuration, environment variables, and analytics setup.
+
+## Prerequisites
+
+- GitHub repository with your code
+- Vercel account ([sign up free](https://vercel.com))
+- Environment variables ready (see [Environment Variables](/guides/environment-variables))
+
+## Deployment Steps
+
+<Steps>
+  <Step title="Connect to Vercel">
+    1. Go to [vercel.com](https://vercel.com) and sign in
+    2. Click "Add New" → "Project"
+    3. Import your GitHub repository
+    4. Select the repository containing Plugin Agency
+  </Step>
+
+  <Step title="Configure Build Settings">
+    Vercel will auto-detect the Vite configuration. Verify these settings:
+    
+    - **Framework Preset**: Vite
+    - **Build Command**: `npm run build`
+    - **Output Directory**: `dist`
+    - **Install Command**: `npm install`
+    
+    ```json vite.config.js
+    import { defineConfig } from 'vite'
+    import react from '@vitejs/plugin-react'
+
+    export default defineConfig({
+      plugins: [react()],
+      server: {
+        host: true,
+        allowedHosts: true
+      }
+    })
+    ```
+  </Step>
+
+  <Step title="Add Environment Variables">
+    In Vercel project settings → Environment Variables, add:
+    
+    <Warning>
+      **Required Variables** - The app won't work without these:
+      - `EMAIL_USER` - Your email account
+      - `EMAIL_PASS` - Email password/app password
+      - `VITE_RECAPTCHA_SITE_KEY` - reCAPTCHA public key
+      - `RECAPTCHA_SECRET_KEY` - reCAPTCHA secret key
+    </Warning>
+    
+    <Note>
+      **Optional Variables**:
+      - `EMAIL_TO` - Comma-separated recipient emails (defaults to info@plugin.uy)
+      - `EMAIL_CC` - CC recipients
+    </Note>
+    
+    See the [Environment Variables guide](/guides/environment-variables) for detailed setup.
+  </Step>
+
+  <Step title="Deploy">
+    Click "Deploy" and wait for the build to complete. Vercel will:
+    
+    1. Install dependencies via `npm install`
+    2. Run `npm run build` to create production build
+    3. Deploy the `dist` folder to CDN
+    4. Provide a `.vercel.app` URL
+  </Step>
+
+  <Step title="Verify Deployment">
+    Once deployed, test:
+    
+    - Site loads correctly
+    - Contact form works (sends emails)
+    - reCAPTCHA validation functions
+    - Analytics tracking is active
+  </Step>
+</Steps>
+
+## Vercel Analytics Setup
+
+The site includes Vercel Analytics via the `@vercel/analytics` package:
+
+```jsx src/main.jsx
+import { Analytics } from '@vercel/analytics/react'
+
+<Analytics />
+```
+
+### Enable Analytics
+
+1. Go to your Vercel project dashboard
+2. Navigate to "Analytics" tab
+3. Click "Enable Analytics"
+4. Analytics will start tracking automatically (no additional configuration needed)
+
+### What Gets Tracked
+
+- Page views
+- User sessions
+- Performance metrics (Web Vitals)
+- Geographic distribution
+- Device/browser stats
+
+## Custom Domain Setup
+
+<Steps>
+  <Step title="Add Domain in Vercel">
+    1. Go to Project Settings → Domains
+    2. Add your custom domain (e.g., `plugin.uy`)
+    3. Vercel will provide DNS configuration
+  </Step>
+
+  <Step title="Configure DNS">
+    Add these records at your DNS provider:
+    
+    **For Apex Domain (plugin.uy)**:
+    ```
+    A Record: 76.76.21.21
+    ```
+    
+    **For WWW Subdomain**:
+    ```
+    CNAME: cname.vercel-dns.com
+    ```
+  </Step>
+
+  <Step title="Wait for SSL">
+    Vercel automatically provisions SSL certificates via Let's Encrypt. This takes 5-10 minutes.
+    
+    Once ready, your site will be accessible via HTTPS on your custom domain.
+  </Step>
+</Steps>
+
+## Build Process Details
+
+### Package.json Scripts
+
+```json package.json
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  }
+}
+```
+
+- **`npm run dev`** - Starts development server on port 5173
+- **`npm run build`** - Creates optimized production build
+- **`npm run preview`** - Preview production build locally
+- **`npm run lint`** - Run ESLint checks
+
+### Build Output
+
+The build command generates:
+
+```
+dist/
+├── assets/
+│   ├── index-[hash].js    # Bundled JavaScript
+│   ├── index-[hash].css   # Compiled CSS
+│   └── [images]           # Optimized images
+└── index.html             # Entry HTML
+```
+
+## Production Optimization
+
+Vite automatically applies these optimizations:
+
+- **Code Splitting** - Lazy loading for better performance
+- **Minification** - Compressed JS/CSS
+- **Tree Shaking** - Remove unused code
+- **Asset Optimization** - Image compression
+- **CSS Extraction** - Separate CSS files for caching
+
+## Environment-Specific Builds
+
+Vercel automatically detects the environment:
+
+- **Production** - Main branch deployments
+- **Preview** - Pull request/branch deployments
+- **Development** - Local `npm run dev`
+
+<Note>
+  Environment variables prefixed with `VITE_` are exposed to the browser. Keep secrets (like `RECAPTCHA_SECRET_KEY`) without the prefix so they remain server-side only.
+</Note>
+
+## Troubleshooting
+
+### Build Fails
+
+1. Check build logs in Vercel dashboard
+2. Verify all dependencies are in `package.json`
+3. Test build locally: `npm run build`
+4. Ensure Node version compatibility (18.x or later)
+
+### Contact Form Not Working
+
+1. Verify environment variables are set
+2. Check email credentials are correct
+3. Review function logs in Vercel dashboard
+4. Test reCAPTCHA keys are valid
+
+### Analytics Not Showing
+
+1. Ensure `@vercel/analytics` is installed
+2. Verify Analytics is enabled in Vercel dashboard
+3. Allow 24 hours for initial data collection
+4. Check browser ad-blockers aren't blocking tracking
+
+## Redeployment
+
+To redeploy:
+
+1. **Push to GitHub** - Automatic deployment on push to main branch
+2. **Manual Deploy** - Use Vercel dashboard "Redeploy" button
+3. **Rollback** - Revert to previous deployment in Vercel
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Environment Variables" icon="key" href="/guides/environment-variables">
+    Configure all required variables
+  </Card>
+  <Card title="Configuration" icon="gear" href="/guides/configuration">
+    Customize Vite and ESLint settings
+  </Card>
+</CardGroup>

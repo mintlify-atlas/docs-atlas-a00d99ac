@@ -1,0 +1,317 @@
+---
+title: 'reCAPTCHA Integration'
+description: 'Implementing Google reCAPTCHA v2 for contact form protection'
+---
+
+## Overview
+
+The Plugin Agency contact form uses Google reCAPTCHA v2 to prevent spam and automated bot submissions. This guide covers both frontend and backend integration.
+
+## What is reCAPTCHA?
+
+reCAPTCHA is a free service from Google that protects websites from spam and abuse by using advanced risk analysis to distinguish humans from bots.
+
+<Info>
+  This project uses reCAPTCHA v2 with the checkbox challenge ("I'm not a robot").
+</Info>
+
+## Site Key vs Secret Key
+
+reCAPTCHA uses two keys:
+
+| Key | Location | Purpose |
+|-----|----------|----------|
+| **Site Key** | Frontend (public) | Renders the reCAPTCHA widget in the browser |
+| **Secret Key** | Backend (private) | Verifies the captcha token on the server |
+
+<Warning>
+  Never expose your Secret Key in frontend code or public repositories.
+</Warning>
+
+## Frontend Integration
+
+### Installation
+
+The project uses the `react-google-recaptcha` package:
+
+```bash
+npm install react-google-recaptcha
+```
+
+### Implementation
+
+From `Contact.jsx`:
+
+```jsx
+import { useState, useRef, lazy, Suspense } from 'react';
+
+// Lazy load reCAPTCHA to improve initial page load
+const ReCAPTCHA = lazy(() => import('react-google-recaptcha'));
+
+const Contact = () => {
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const captchaRef = useRef(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate captcha before submission
+    if (!captchaToken) {
+      setStatus({ type: 'error', message: 'Por favor, completa el captcha.' });
+      return;
+    }
+
+    // Send captchaToken with form data
+    const response = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre: formData.nombre,
+        apellido: formData.apellido,
+        email: formData.email,
+        telefono: formData.telefono,
+        message: formData.cuerpo,
+        captchaToken // Include the token
+      }),
+    });
+
+    // Reset captcha after submission
+    if (response.ok) {
+      setCaptchaToken(null);
+      captchaRef.current.reset();
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* Form fields... */}
+      
+      <Suspense fallback={<div>Cargando...</div>}>
+        <ReCAPTCHA
+          ref={captchaRef}
+          sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+          onChange={setCaptchaToken}
+        />
+      </Suspense>
+      
+      <button type="submit">Enviar Mensaje</button>
+    </form>
+  );
+};
+```
+
+### Key Features
+
+1. **Lazy Loading**: The reCAPTCHA component is lazy-loaded to improve performance
+2. **Suspense Fallback**: Shows loading state while reCAPTCHA loads
+3. **Ref Management**: Uses `useRef` to programmatically reset the captcha
+4. **Token State**: Stores the captcha token in React state
+5. **Validation**: Checks for token before allowing form submission
+
+### Error Boundary
+
+The implementation includes an error boundary for graceful degradation:
+
+```jsx
+class RecaptchaErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  
+  render() {
+    if (this.state.hasError) {
+      return (
+        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem' }}>
+          Captcha no disponible en este entorno.
+        </p>
+      );
+    }
+    return this.props.children;
+  }
+}
+```
+
+<Note>
+  The error boundary prevents the entire form from crashing if reCAPTCHA fails to load.
+</Note>
+
+## Backend Verification
+
+### Verification Flow
+
+From `send-email.js`:
+
+```javascript
+// Extract captcha token from request
+const { nombre, apellido, email, telefono, message, captchaToken } = req.body;
+
+// Validate token is present
+if (!nombre || !email || !message || !captchaToken) {
+  return res.status(400).json({ error: 'Faltan campos obligatorios o el captcha' });
+}
+
+// Verify with Google's API
+const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${captchaToken}`;
+
+try {
+  const captchaRes = await fetch(verifyUrl, { method: 'POST' });
+  const captchaData = await captchaRes.json();
+
+  if (!captchaData.success) {
+    return res.status(400).json({ error: 'Captcha inválido' });
+  }
+} catch (error) {
+  console.error('Error verificando captcha:', error);
+  return res.status(500).json({ error: 'Error al verificar captcha' });
+}
+
+// Proceed with email sending...
+```
+
+### Verification Endpoint
+
+Google's verification endpoint:
+
+```
+POST https://www.google.com/recaptcha/api/siteverify
+```
+
+**Parameters:**
+- `secret`: Your secret key (from environment variable)
+- `response`: The captcha token from the frontend
+
+**Response:**
+
+```json
+{
+  "success": true|false,
+  "challenge_ts": "timestamp",
+  "hostname": "your-domain.com",
+  "error-codes": []
+}
+```
+
+### Error Handling
+
+The backend handles three captcha-related error scenarios:
+
+| Error | Status Code | Response |
+|-------|-------------|----------|
+| Missing token | 400 | `{ "error": "Faltan campos obligatorios o el captcha" }` |
+| Invalid token | 400 | `{ "error": "Captcha inválido" }` |
+| Verification failure | 500 | `{ "error": "Error al verificar captcha" }` |
+
+## Environment Setup
+
+### Frontend Environment Variable
+
+Create a `.env` file in your project root:
+
+```bash
+VITE_RECAPTCHA_SITE_KEY=your-site-key-here
+```
+
+<Note>
+  The `VITE_` prefix is required for Vite to expose the variable to the frontend.
+</Note>
+
+### Backend Environment Variable
+
+Add to your backend `.env` file:
+
+```bash
+RECAPTCHA_SECRET_KEY=your-secret-key-here
+```
+
+### Obtaining Keys
+
+1. Go to [Google reCAPTCHA Admin Console](https://www.google.com/recaptcha/admin)
+2. Click "Create" or "+" to register a new site
+3. Choose **reCAPTCHA v2** with "I'm not a robot" checkbox
+4. Add your domain(s)
+5. Copy the **Site Key** (for frontend) and **Secret Key** (for backend)
+
+## Development Mode
+
+The contact form gracefully handles missing reCAPTCHA configuration in development:
+
+```jsx
+{import.meta.env.VITE_RECAPTCHA_SITE_KEY ? (
+  <RecaptchaErrorBoundary>
+    <Suspense fallback={<div>Cargando...</div>}>
+      <ReCAPTCHA
+        ref={captchaRef}
+        sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+        onChange={setCaptchaToken}
+      />
+    </Suspense>
+  </RecaptchaErrorBoundary>
+) : (
+  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem' }}>
+    ⚠️ Captcha desactivado (entorno local sin .env)
+  </p>
+)}
+```
+
+<Warning>
+  Without a valid site key, the form will display a warning but remain functional for local testing.
+</Warning>
+
+## Testing
+
+### Test Keys
+
+Google provides test keys that always pass or fail:
+
+**Always Pass:**
+- Site Key: `6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI`
+- Secret Key: `6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe`
+
+### Testing Flow
+
+1. Set test keys in your environment variables
+2. Submit the contact form
+3. Verify the token is sent in the request
+4. Check backend logs for verification success
+5. Confirm email is sent
+
+### Common Issues
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Widget not appearing | Missing or invalid site key | Check `VITE_RECAPTCHA_SITE_KEY` |
+| "Captcha inválido" error | Invalid secret key | Verify `RECAPTCHA_SECRET_KEY` |
+| Token not sent | Missing captchaToken in request | Ensure `captchaToken` state is populated |
+| Localhost testing fails | Domain not registered | Add `localhost` in reCAPTCHA admin console |
+
+## Token Lifecycle
+
+1. **User loads form**: reCAPTCHA widget is rendered
+2. **User checks box**: Google validates and returns a token
+3. **Token stored**: `onChange` callback stores token in React state
+4. **Form submission**: Token is sent with form data to backend
+5. **Backend verification**: Token is verified with Google's API
+6. **Token reset**: After successful submission, widget is reset via `captchaRef.current.reset()`
+
+<Info>
+  Tokens expire after 2 minutes. If a user waits too long after completing the captcha, they may need to verify again.
+</Info>
+
+## Security Best Practices
+
+1. **Never commit keys**: Add `.env` to `.gitignore`
+2. **Use environment variables**: Keep keys out of source code
+3. **Verify on backend**: Always verify tokens server-side, never trust client
+4. **Reset after use**: Clear tokens after submission
+5. **Handle errors gracefully**: Provide clear feedback when verification fails
+6. **Domain restrictions**: Register only your production domains
+
+## Related
+
+- [Send Email API](/api/send-email) - API endpoint that uses reCAPTCHA verification
+- [Google reCAPTCHA Documentation](https://developers.google.com/recaptcha/docs/display)

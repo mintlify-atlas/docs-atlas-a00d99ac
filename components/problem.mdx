@@ -1,0 +1,233 @@
+---
+title: Problem Component
+description: Problem statement section displaying common pain points with icons
+---
+
+# Problem Component
+
+The Problem component presents common challenges faced by digital projects through a grid of problem cards with icons from lucide-react.
+
+## Overview
+
+This section:
+- Articulates the problems Plugin Agency solves
+- Displays 6 common pain points in a grid layout
+- Uses icons from lucide-react for visual representation
+- Includes a call-to-action button
+- Features eyebrow text and highlighted heading
+
+## Features
+
+- **Icon Integration**: Uses lucide-react icons for each problem
+- **Grid Layout**: Responsive 3-column grid (adapts to mobile)
+- **Problem Array**: Data-driven rendering of problem cards
+- **Highlighted Text**: Emphasized "desordenados" in heading
+- **CTA Integration**: Direct link to contact form
+
+## Props
+
+This component accepts no props.
+
+## Usage
+
+```jsx
+import Problem from './components/Problem';
+
+function App() {
+  return (
+    <>
+      {/* Other sections */}
+      <Problem />
+      {/* More sections */}
+    </>
+  );
+}
+```
+
+## Problem Data Structure
+
+The component uses a `PROBLEMS` array with 6 problem definitions:
+
+```javascript
+const PROBLEMS = [
+    {
+        title: "Mensaje poco claro",
+        text: "Tu marca y propuesta no están claras — cuesta explicarlas y venderlas.",
+        icon: <MessageSquareOff size={24} />
+    },
+    {
+        title: "Redes y contenidos desalineados",
+        text: "Lo que mostrás en redes no representa lo que realmente hacen.",
+        icon: <Share2 size={24} />
+    },
+    {
+        title: "Falta de coherencia",
+        text: "Web, redes y producto funcionan por separado y se pierde coherencia.",
+        icon: <Puzzle size={24} />
+    },
+    {
+        title: "El servicio es bueno, el mensaje no",
+        text: "El servicio es sólido, pero el lenguaje no lo comunica.",
+        icon: <MegaphoneOff size={24} />
+    },
+    {
+        title: "Procesos que consumen tiempo",
+        text: "Tareas repetidas, falta de seguimiento e improvisación operativa.",
+        icon: <Clock size={24} />
+    },
+    {
+        title: "Visibilidad sin estrategia",
+        text: "Querés crecer, pero sin hacer ruido vacío ni disparar sin dirección.",
+        icon: <EyeOff size={24} />
+    }
+];
+```
+
+## Code Implementation
+
+```jsx title="Problem.jsx"
+import { MessageSquareOff, Share2, Puzzle, MegaphoneOff, Clock, EyeOff } from 'lucide-react';
+
+const PROBLEMS = [
+    {
+        title: "Mensaje poco claro",
+        text: "Tu marca y propuesta no están claras — cuesta explicarlas y venderlas.",
+        icon: <MessageSquareOff size={24} />
+    },
+    {
+        title: "Redes y contenidos desalineados",
+        text: "Lo que mostrás en redes no representa lo que realmente hacen.",
+        icon: <Share2 size={24} />
+    },
+    {
+        title: "Falta de coherencia",
+        text: "Web, redes y producto funcionan por separado y se pierde coherencia.",
+        icon: <Puzzle size={24} />
+    },
+    {
+        title: "El servicio es bueno, el mensaje no",
+        text: "El servicio es sólido, pero el lenguaje no lo comunica.",
+        icon: <MegaphoneOff size={24} />
+    },
+    {
+        title: "Procesos que consumen tiempo",
+        text: "Tareas repetidas, falta de seguimiento e improvisación operativa.",
+        icon: <Clock size={24} />
+    },
+    {
+        title: "Visibilidad sin estrategia",
+        text: "Querés crecer, pero sin hacer ruido vacío ni disparar sin dirección.",
+        icon: <EyeOff size={24} />
+    }
+];
+
+const Problem = () => {
+    return (
+        <section id="problem" className="problem-section section-divider">
+            <div className="container">
+                <div className="problem-header">
+                    <p className="problem-eyebrow">// el problema que resolvemos</p>
+                    <h2 className="section-title">
+                        Proyectos que avanzan<br />
+                        pero se sienten <span>desordenados</span>
+                    </h2>
+                    <p style={{ color: 'var(--text-2)', maxWidth: '560px', margin: '0 auto', fontSize: '0.95rem' }}>
+                        Hay piezas buenas, pero no encajan. El desafío no es hacer más: es ordenar, integrar y conectar.
+                    </p>
+                </div>
+
+                <div className="problem-grid">
+                    {PROBLEMS.map((item, i) => (
+                        <div key={i} className="problem-card">
+                            <div className="problem-icon">{item.icon}</div>
+                            <h3>{item.title}</h3>
+                            <p>{item.text}</p>
+                        </div>
+                    ))}
+                </div>
+
+                <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+                    <a href="#contact" className="btn btn-primary">Hablemos de tu proyecto</a>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default Problem;
+```
+
+## Icons Used
+
+All icons from `lucide-react` package:
+
+- **MessageSquareOff** - Unclear messaging
+- **Share2** - Social media/content misalignment
+- **Puzzle** - Lack of coherence
+- **MegaphoneOff** - Communication issues
+- **Clock** - Time-consuming processes
+- **EyeOff** - Visibility without strategy
+
+<Info>
+All icons are rendered at 24px size for consistency across the grid.
+</Info>
+
+## Styling Classes
+
+- `.problem-section` - Main section container
+- `.section-divider` - Visual separator between sections
+- `.problem-header` - Header content container
+- `.problem-eyebrow` - Eyebrow text with code-style formatting
+- `.section-title` - Main heading with highlighted span
+- `.problem-grid` - Grid container for problem cards
+- `.problem-card` - Individual problem card
+- `.problem-icon` - Icon container within each card
+
+## Layout Structure
+
+1. **Header Section**
+   - Eyebrow text: `// el problema que resolvemos`
+   - Main title with highlighted word
+   - Descriptive subtitle (max-width: 560px, centered)
+
+2. **Problem Grid**
+   - 6 problem cards in responsive grid
+   - Each card contains icon, title, and description
+
+3. **CTA Button**
+   - Centered below grid
+   - Links to #contact section
+
+## Responsive Behavior
+
+- **Desktop**: 3-column grid
+- **Tablet**: 2-column grid
+- **Mobile**: Single column stack
+
+## Content Strategy
+
+The problems are ordered to build a narrative:
+
+1. **Clarity issues** (messaging, alignment)
+2. **Integration problems** (coherence, communication)
+3. **Operational challenges** (time, strategy)
+
+## Dependencies
+
+```json
+{
+  "lucide-react": "^0.x.x"
+}
+```
+
+Icons imported:
+- MessageSquareOff
+- Share2
+- Puzzle
+- MegaphoneOff
+- Clock
+- EyeOff
+
+<Note>
+The eyebrow text uses `//` to create a code-comment aesthetic that aligns with the tech-focused brand.
+</Note>

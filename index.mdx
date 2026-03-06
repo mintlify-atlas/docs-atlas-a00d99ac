@@ -1,97 +1,92 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Welcome to Plugin Agency"
+description: "A modern React landing page for digital agency services - built with Vite, React, and cutting-edge web technologies"
 ---
 
-## Setting up
+## Overview
 
-Get your documentation site up and running in minutes.
+Plugin Agency is a responsive single-page application designed for a digital agency specializing in web development, branding, automation, and digital solutions. This documentation covers the complete architecture, components, and deployment guide for the project.
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
+<CardGroup cols={2}>
   <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
+    title="Quick Start"
+    icon="rocket"
+    href="/quickstart"
   >
-    Edit your docs locally and preview them in real time.
+    Get the project running locally in under 5 minutes
   </Card>
   <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
+    title="Installation Guide"
+    icon="download"
+    href="/installation"
   >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+    Complete setup instructions with dependencies and environment variables
   </Card>
   <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
+    title="Component Reference"
+    icon="grid"
+    href="/components/navbar"
   >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
-
-## Create beautiful pages
-
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
+    Explore all React components with props and usage examples
   </Card>
   <Card
-    title="Code samples"
+    title="API Documentation"
     icon="code"
-    href="/essentials/code"
+    href="/api/send-email"
   >
-    Add sample code to demonstrate how to use your product.
+    Backend API endpoints for contact form and email functionality
   </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+</CardGroup>
 
-## Need inspiration?
+## Key Features
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+Plugin Agency includes modern features designed for professional agency websites:
+
+<CardGroup cols={2}>
+  <Card title="Video Hero Background" icon="play">
+    Dynamic video background with overlay content for visual impact
+  </Card>
+  <Card title="Contact Form Integration" icon="envelope">
+    Nodemailer-powered email delivery with reCAPTCHA spam protection
+  </Card>
+  <Card title="Responsive Design" icon="mobile">
+    Mobile-first approach with hamburger navigation and adaptive layouts
+  </Card>
+  <Card title="Calendly Integration" icon="calendar">
+    Embedded scheduling widget for seamless appointment booking
+  </Card>
+  <Card title="Analytics Ready" icon="chart-line">
+    Vercel Analytics integration for traffic insights
+  </Card>
+  <Card title="Modern Stack" icon="react">
+    Built with React 19, Vite 7, and vanilla CSS for maximum performance
+  </Card>
+</CardGroup>
+
+## Tech Stack
+
+- **Frontend**: React 19.2 with modern hooks and component architecture
+- **Build Tool**: Vite 7.2.4 for lightning-fast development and optimized builds
+- **Styling**: Vanilla CSS with CSS variables, Flexbox, and Grid
+- **Backend API**: Node.js serverless functions with Nodemailer
+- **Security**: Google reCAPTCHA v2 for form protection
+- **Icons**: Lucide React for scalable vector icons
+- **Linting**: ESLint 9.39.1 with React-specific rules
+
+## Live Demo
+
+Visit the production site at [plugin.uy](https://plugin.uy/) to see the application in action.
+
+## Documentation Structure
+
+<CardGroup cols={3}>
+  <Card title="Get Started" icon="flag-checkered" href="/quickstart">
+    Setup and quickstart guide
+  </Card>
+  <Card title="Components" icon="puzzle-piece" href="/components/navbar">
+    11 React components documented
+  </Card>
+  <Card title="Guides" icon="book" href="/guides/deployment">
+    Deployment and configuration
+  </Card>
+</CardGroup>

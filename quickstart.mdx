@@ -1,80 +1,172 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quick Start
+description: Get Plugin Agency up and running in minutes
 ---
 
-## Get started in three steps
+# Quick Start Guide
 
-Get your documentation site running locally and make your first customization.
-
-### Step 1: Set up your local environment
-
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
-
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
-
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 3: Go live
-
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
-
-## Next steps
-
-Now that you have your docs running, explore these key features:
-
-<CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
-</CardGroup>
+Get Plugin Agency up and running on your local machine in just a few minutes. This guide will walk you through the essential steps to clone, configure, and launch the application.
 
 <Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
+  Make sure you have Node.js installed on your system before proceeding. Node.js 18 or higher is recommended.
 </Note>
+
+## Setup Steps
+
+<Steps>
+  <Step title="Clone the Repository">
+    Clone the Plugin Agency repository from GitHub:
+    
+    ```bash
+    git clone https://github.com/salvador-castro/plugin-agency.git
+    cd plugin-agency
+    ```
+    
+    This will download the project and navigate into the project directory.
+  </Step>
+  
+  <Step title="Install Dependencies">
+    Install all required dependencies using your preferred package manager:
+    
+    <CodeGroup>
+      ```bash npm
+      npm install
+      ```
+      
+      ```bash yarn
+      yarn install
+      ```
+      
+      ```bash pnpm
+      pnpm install
+      ```
+    </CodeGroup>
+    
+    This will install:
+    - React 19.2.0 and React DOM
+    - Vite 7.2.4 (build tool)
+    - Nodemailer 7.0.13 (email handling)
+    - react-google-recaptcha 3.1.0 (spam protection)
+    - Lucide React 0.575.0 (icon components)
+    - All development dependencies including ESLint
+  </Step>
+  
+  <Step title="Configure Environment Variables">
+    Create a `.env` file in the root directory of your project:
+    
+    ```bash
+    touch .env
+    ```
+    
+    Add the following environment variables:
+    
+    ```env
+    EMAIL_USER=your_gmail_address
+    EMAIL_PASS=your_app_password
+    VITE_RECAPTCHA_SITE_KEY=your_recaptcha_site_key
+    RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key
+    ```
+    
+    <Warning>
+      For Gmail, you need to generate an [App Password](https://support.google.com/accounts/answer/185833) instead of using your regular password. This is required for security reasons.
+    </Warning>
+    
+    <Note>
+      Get your reCAPTCHA keys from the [Google reCAPTCHA Admin Console](https://www.google.com/recaptcha/admin). You'll need to register your site and get both a site key and secret key.
+    </Note>
+  </Step>
+  
+  <Step title="Start the Development Server">
+    Launch the Vite development server:
+    
+    <CodeGroup>
+      ```bash npm
+      npm run dev
+      ```
+      
+      ```bash yarn
+      yarn dev
+      ```
+      
+      ```bash pnpm
+      pnpm dev
+      ```
+    </CodeGroup>
+    
+    You should see output similar to:
+    
+    ```bash
+    VITE v7.2.4  ready in 324 ms
+    
+    ➜  Local:   http://localhost:5173/
+    ➜  Network: http://192.168.1.10:5173/
+    ➜  press h + enter to show help
+    ```
+    
+    <Note>
+      The development server runs on port 5173 by default. Open your browser and navigate to `http://localhost:5173` to see your application.
+    </Note>
+  </Step>
+  
+  <Step title="Verify Installation">
+    Your Plugin Agency landing page should now be running! You should see:
+    
+    - A dynamic video background in the hero section
+    - Responsive navigation bar
+    - Team showcase with avatars
+    - Services overview section
+    - Contact form with reCAPTCHA
+    
+    Try resizing your browser window to test the responsive design, or open the site on your mobile device using the network URL provided by Vite.
+  </Step>
+</Steps>
+
+## Build for Production
+
+Once you're ready to deploy, build the production version:
+
+<CodeGroup>
+  ```bash npm
+  npm run build
+  ```
+  
+  ```bash yarn
+  yarn build
+  ```
+  
+  ```bash pnpm
+  pnpm build
+  ```
+</CodeGroup>
+
+This creates an optimized production build in the `dist/` directory.
+
+## Preview Production Build
+
+Test your production build locally before deploying:
+
+<CodeGroup>
+  ```bash npm
+  npm run preview
+  ```
+  
+  ```bash yarn
+  yarn preview
+  ```
+  
+  ```bash pnpm
+  pnpm preview
+  ```
+</CodeGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Detailed Installation" icon="book" href="/installation">
+    Learn more about prerequisites, configuration, and troubleshooting.
+  </Card>
+  
+  <Card title="Configuration" icon="gear" href="/guides/configuration">
+    Customize your Plugin Agency installation.
+  </Card>
+</CardGroup>

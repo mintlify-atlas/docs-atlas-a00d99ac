@@ -1,0 +1,268 @@
+---
+title: Hero Component
+description: Main hero section with typewriter effect, video background, and animated elements
+---
+
+# Hero Component
+
+The Hero component is the main landing section featuring an animated typewriter effect, video background, gradient orbs, and call-to-action buttons.
+
+## Overview
+
+A visually rich hero section that:
+- Displays an animated typewriter effect cycling through key words
+- Features a looping video background with overlay
+- Includes animated gradient orbs and grid background
+- Shows agency statistics and value propositions
+- Provides clear CTAs for user engagement
+
+## Features
+
+- **Typewriter Animation**: Custom-built typing/deleting effect for rotating text
+- **Video Background**: Autoplay, looping, muted video with opacity control
+- **Visual Effects**: Animated grid, gradient orbs, and overlays
+- **Badge Component**: Location and agency type indicator
+- **Statistics Display**: Key metrics (5+ Servicios, 360° Enfoque, 1x Ecosistema)
+- **Dual CTAs**: Primary and secondary call-to-action buttons
+
+## Props
+
+This component accepts no props.
+
+## Usage
+
+```jsx
+import Hero from './components/Hero';
+
+function App() {
+  return (
+    <>
+      <Hero />
+      {/* Other sections */}
+    </>
+  );
+}
+```
+
+## Typewriter Effect
+
+The component cycles through these words with typing/deleting animation:
+
+```javascript
+const WORDS = [
+    'marca,',
+    'contenido',
+    'y tecnología'
+];
+```
+
+## Code Implementation
+
+```jsx title="Hero.jsx" {15-40}
+import { useState, useEffect } from 'react';
+
+const WORDS = [
+    'marca,',
+    'contenido',
+    'y tecnología'
+];
+
+const Hero = () => {
+    const [displayText, setDisplayText] = useState('');
+    const [wordIndex, setWordIndex] = useState(0);
+    const [charIndex, setCharIndex] = useState(0);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    useEffect(() => {
+        const currentWord = WORDS[wordIndex];
+        const speed = isDeleting ? 60 : 100;
+
+        const timer = setTimeout(() => {
+            if (!isDeleting) {
+                setDisplayText(currentWord.substring(0, charIndex + 1));
+                if (charIndex + 1 === currentWord.length) {
+                    setTimeout(() => setIsDeleting(true), 1800);
+                    return;
+                }
+                setCharIndex(c => c + 1);
+            } else {
+                setDisplayText(currentWord.substring(0, charIndex - 1));
+                if (charIndex - 1 === 0) {
+                    setIsDeleting(false);
+                    setWordIndex(i => (i + 1) % WORDS.length);
+                    setCharIndex(0);
+                    return;
+                }
+                setCharIndex(c => c - 1);
+            }
+        }, speed);
+
+        return () => clearTimeout(timer);
+    }, [charIndex, isDeleting, wordIndex]);
+
+    return (
+        <section id="hero" className="hero">
+            {/* Video background */}
+            <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden' }}>
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.35 }}
+                >
+                    <source src="/assets/hero/hero.mp4" type="video/mp4" />
+                </video>
+                <div style={{
+                    position: 'absolute', inset: 0,
+                    background: 'linear-gradient(to bottom, rgba(5,5,10,0.55) 0%, rgba(5,5,10,0.45) 50%, rgba(5,5,10,0.85) 100%)'
+                }} />
+            </div>
+
+            {/* Animated grid + orbs */}
+            <div className="hero-bg" style={{ zIndex: 1 }}>
+                <div className="grid-bg" />
+                <div className="orb orb-cyan" style={{
+                    width: '600px', height: '600px',
+                    top: '-150px', left: '-200px',
+                    opacity: 0.35
+                }} />
+                <div className="orb orb-violet" style={{
+                    width: '500px', height: '500px',
+                    bottom: '-100px', right: '-150px',
+                    opacity: 0.3
+                }} />
+            </div>
+
+            <div className="container hero-content-wrapper">
+                <div className="hero-badge">
+                    <span className="hero-badge-dot" />
+                    <span className="mono">Agencia Digital · Uruguay</span>
+                </div>
+
+                <h1>
+                    Ordenamos tu proyecto digital:{' '}
+                    <span className="hero-gradient-text">
+                        {displayText}
+                    </span>
+                    <span className="hero-cursor" />
+                </h1>
+
+                <p className="hero-subtitle">
+                    Convertimos proyectos digitales en un sistema conectado: branding, comunicación, contenidos, web y automatización trabajando en conjunto para ganar claridad, coherencia y visibilidad.
+                </p>
+
+                <div className="hero-buttons">
+                    <a href="#contact" className="btn btn-primary">
+                        Coordinar una llamada
+                    </a>
+                    <a href="#method" className="btn btn-outline">
+                        Ver cómo trabajamos →
+                    </a>
+                </div>
+
+                <div className="hero-stats">
+                    <div className="hero-stat">
+                        <span className="hero-stat-value">5<span>+</span></span>
+                        <span className="hero-stat-label">Servicios</span>
+                    </div>
+                    <div className="hero-stat">
+                        <span className="hero-stat-value">360<span>°</span></span>
+                        <span className="hero-stat-label">Enfoque digital</span>
+                    </div>
+                    <div className="hero-stat">
+                        <span className="hero-stat-value">1<span>x</span></span>
+                        <span className="hero-stat-label">Ecosistema</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default Hero;
+```
+
+## Typewriter Animation Logic
+
+### Speed Configuration
+
+- **Typing speed**: 100ms per character
+- **Deleting speed**: 60ms per character  
+- **Pause at end**: 1800ms before starting to delete
+
+### State Management
+
+The animation uses four state variables:
+
+```javascript
+const [displayText, setDisplayText] = useState('');     // Currently displayed text
+const [wordIndex, setWordIndex] = useState(0);          // Current word in WORDS array
+const [charIndex, setCharIndex] = useState(0);          // Current character position
+const [isDeleting, setIsDeleting] = useState(false);    // Typing or deleting mode
+```
+
+<Note>
+The typewriter effect cycles infinitely through all words using modulo arithmetic: `(i + 1) % WORDS.length`
+</Note>
+
+## Visual Layers (z-index)
+
+1. **Video background** (z-index: 0) - At the bottom
+2. **Animated grid + orbs** (z-index: 1) - Middle layer
+3. **Content** (default stacking) - On top
+
+## Styling Classes
+
+- `.hero` - Main hero section container
+- `.hero-bg` - Background effects container
+- `.grid-bg` - Animated grid pattern
+- `.orb` - Gradient orb elements
+- `.orb-cyan`, `.orb-violet` - Color variations
+- `.hero-badge` - Top badge component
+- `.hero-gradient-text` - Gradient text effect
+- `.hero-cursor` - Blinking cursor animation
+- `.hero-stats` - Statistics display
+
+## Call-to-Action Buttons
+
+Two CTAs with different styles:
+
+1. **Primary CTA**: "Coordinar una llamada" → Links to #contact
+2. **Outline CTA**: "Ver cómo trabajamos →" → Links to #method
+
+## Video Background
+
+The video has these properties:
+
+- **autoPlay**: Starts automatically
+- **loop**: Continuous playback
+- **muted**: No sound (required for autoplay)
+- **playsInline**: Mobile compatibility
+- **opacity**: 0.35 for subtle effect
+
+Video location: `/assets/hero/hero.mp4`
+
+<Warning>
+The video must be optimized for web delivery. Large video files can significantly impact page load time.
+</Warning>
+
+## Gradient Orbs
+
+Two animated gradient orbs provide visual interest:
+
+- **Cyan orb**: Top-left, 600x600px, opacity 0.35
+- **Violet orb**: Bottom-right, 500x500px, opacity 0.3
+
+## Statistics Display
+
+Three key metrics are displayed:
+
+- **5+ Servicios**
+- **360° Enfoque digital**
+- **1x Ecosistema**
+
+## Dependencies
+
+- React hooks: `useState`, `useEffect`
+- No external libraries required

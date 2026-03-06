@@ -1,0 +1,567 @@
+---
+title: Contact Component
+description: Contact form with reCAPTCHA, Calendly integration, and form validation
+---
+
+# Contact Component
+
+The Contact component provides a comprehensive contact section with a validated form, Google reCAPTCHA integration, Calendly booking widget, and team avatars.
+
+## Overview
+
+This section:
+- Displays a two-column layout (info + form)
+- Includes form validation with error handling
+- Integrates Google reCAPTCHA v2
+- Loads Calendly widget for meeting scheduling
+- Shows team member avatars
+- Handles form submission to API endpoint
+- Provides loading and success/error states
+
+## Features
+
+- **Form Validation**: Email validation, phone number filtering, required fields
+- **reCAPTCHA**: Google reCAPTCHA v2 with error boundary
+- **Calendly Integration**: Popup widget for scheduling calls
+- **Dynamic Loading**: Lazy loading of reCAPTCHA component
+- **Status Messages**: Loading, success, and error feedback
+- **Team Avatars**: Visual representation of team
+- **Error Boundary**: Graceful reCAPTCHA fallback
+- **API Integration**: POST to `/api/send-email`
+
+## Props
+
+This component accepts no props.
+
+## Usage
+
+```jsx
+import Contact from './components/Contact';
+
+function App() {
+  return (
+    <>
+      {/* Other sections */}
+      <Contact />
+      {/* More sections */}
+    </>
+  );
+}
+```
+
+## Form Fields
+
+| Field | Type | Required | Validation |
+|-------|------|----------|------------|
+| `nombre` | text | Yes | - |
+| `apellido` | text | Yes | - |
+| `email` | email | Yes | Must contain @ |
+| `telefono` | tel | No | Numbers only |
+| `cuerpo` | textarea | Yes | - |
+
+## Code Implementation
+
+```jsx title="Contact.jsx" {22-28, 35-50, 61-102}
+import { useState, useRef, lazy, Suspense, useEffect, Component } from 'react';
+
+const ReCAPTCHA = lazy(() => import('react-google-recaptcha'));
+
+class RecaptchaErrorBoundary extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false };
+    }
+    static getDerivedStateFromError() {
+        return { hasError: true };
+    }
+    render() {
+        if (this.state.hasError) {
+            return <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem' }}>Captcha no disponible en este entorno.</p>;
+        }
+        return this.props.children;
+    }
+}
+
+const Contact = () => {
+    const [formData, setFormData] = useState({
+        nombre: '',
+        apellido: '',
+        email: '',
+        telefono: '',
+        cuerpo: ''
+    });
+
+    const [status, setStatus] = useState(null);
+    const [errors, setErrors] = useState({});
+    const [captchaToken, setCaptchaToken] = useState(null);
+    const captchaRef = useRef(null);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        if (errors[name]) {
+            setErrors({ ...errors, [name]: '' });
+        }
+        if (status) setStatus(null);
+
+        if (name === 'telefono') {
+            const re = /^[0-9\b]+$/;
+            if (value === '' || re.test(value)) {
+                setFormData({ ...formData, [name]: value });
+            }
+        } else {
+            setFormData({ ...formData, [name]: value });
+        }
+    };
+
+    const handleBlur = (e) => {
+        const { name, value } = e.target;
+        if (name === 'email') {
+            if (value && !value.includes('@')) {
+                setErrors({ ...errors, email: 'El email debe contener un @' });
+            }
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!captchaToken) {
+            setStatus({ type: 'error', message: 'Por favor, completa el captcha.' });
+            return;
+        }
+
+        setStatus({ type: 'loading', message: 'Enviando...' });
+
+        try {
+            const response = await fetch('/api/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nombre: formData.nombre,
+                    apellido: formData.apellido,
+                    email: formData.email,
+                    telefono: formData.telefono,
+                    message: formData.cuerpo,
+                    captchaToken
+                }),
+            });
+
+            if (response.ok) {
+                setStatus({ type: 'success', message: '¡Gracias! Tu mensaje ha sido enviado correctamente.' });
+                setFormData({ nombre: '', apellido: '', email: '', telefono: '', cuerpo: '' });
+                setCaptchaToken(null);
+                captchaRef.current.reset();
+                setTimeout(() => setStatus(null), 5000);
+            } else {
+                const data = await response.json();
+                throw new Error(data.error || 'Error en el servidor');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setStatus({ type: 'error', message: error.message || 'Hubo un error al enviar el mensaje.' });
+            setTimeout(() => setStatus(null), 5000);
+        }
+    };
+
+    // ... Calendly loading and openCalendly function
+    // ... Render JSX
+};
+
+export default Contact;
+```
+
+## Form Validation
+
+### Email Validation (on blur)
+
+```javascript
+const handleBlur = (e) => {
+    const { name, value } = e.target;
+    if (name === 'email') {
+        if (value && !value.includes('@')) {
+            setErrors({ ...errors, email: 'El email debe contener un @' });
+        }
+    }
+};
+```
+
+Validates email contains `@` symbol when user leaves the field.
+
+### Phone Number Filtering
+
+```javascript
+if (name === 'telefono') {
+    const re = /^[0-9\b]+$/;
+    if (value === '' || re.test(value)) {
+        setFormData({ ...formData, [name]: value });
+    }
+}
+```
+
+Only allows numeric characters in phone field.
+
+### Required Field Validation
+
+HTML5 `required` attribute on:
+- nombre
+- apellido
+- email
+- cuerpo
+
+<Note>
+Phone (teléfono) is optional, marked as "Telefono (Op.)" in the UI.
+</Note>
+
+## reCAPTCHA Integration
+
+### Lazy Loading
+
+```javascript
+const ReCAPTCHA = lazy(() => import('react-google-recaptcha'));
+```
+
+reCAPTCHA is lazy-loaded to improve initial page load performance.
+
+### Error Boundary
+
+Custom error boundary catches reCAPTCHA loading errors:
+
+```jsx
+class RecaptchaErrorBoundary extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false };
+    }
+    static getDerivedStateFromError() {
+        return { hasError: true };
+    }
+    render() {
+        if (this.state.hasError) {
+            return <p>Captcha no disponible en este entorno.</p>;
+        }
+        return this.props.children;
+    }
+}
+```
+
+### reCAPTCHA Rendering
+
+```jsx
+{import.meta.env.VITE_RECAPTCHA_SITE_KEY ? (
+    <RecaptchaErrorBoundary>
+        <Suspense fallback={<div>Cargando...</div>}>
+            <ReCAPTCHA
+                ref={captchaRef}
+                sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                onChange={setCaptchaToken}
+            />
+        </Suspense>
+    </RecaptchaErrorBoundary>
+) : (
+    <p>⚠️ Captcha desactivado (entorno local sin .env)</p>
+)}
+```
+
+### Environment Variable
+
+Requires `VITE_RECAPTCHA_SITE_KEY` in `.env` file:
+
+```bash
+VITE_RECAPTCHA_SITE_KEY=your_recaptcha_site_key_here
+```
+
+<Warning>
+Without the reCAPTCHA site key, form submission will be blocked. The component shows a warning in development environments.
+</Warning>
+
+## Calendly Integration
+
+### Loading Calendly Assets
+
+```javascript
+useEffect(() => {
+    const link = document.createElement('link');
+    link.href = "https://assets.calendly.com/assets/external/widget.css";
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
+
+    const script = document.createElement('script');
+    script.src = "https://assets.calendly.com/assets/external/widget.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+        if (document.body.contains(script)) {
+            document.body.removeChild(script);
+        }
+        if (document.head.contains(link)) {
+            document.head.removeChild(link);
+        }
+    }
+}, []);
+```
+
+### Opening Calendly Popup
+
+```javascript
+const openCalendly = () => {
+    if (window.Calendly) {
+        window.Calendly.initPopupWidget({
+            url: 'https://calendly.com/ceitutnfrba/plugin-test?hide_event_type_details=1&hide_gdpr_banner=1'
+        });
+    }
+};
+```
+
+### Calendly Button
+
+```jsx
+<button
+    onClick={openCalendly}
+    className="btn btn-outline-white"
+    style={{ width: '100%', maxWidth: '300px' }}
+>
+    Agenda una llamada de 30 min
+</button>
+```
+
+<Info>
+Calendly integration uses query parameters to hide event type details and GDPR banner for cleaner UX.
+</Info>
+
+## Form Submission
+
+### API Endpoint
+
+POST request to `/api/send-email`:
+
+```javascript
+const response = await fetch('/api/send-email', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        nombre: formData.nombre,
+        apellido: formData.apellido,
+        email: formData.email,
+        telefono: formData.telefono,
+        message: formData.cuerpo,
+        captchaToken
+    }),
+});
+```
+
+### Success Handling
+
+On success:
+1. Show success message
+2. Clear form fields
+3. Reset reCAPTCHA
+4. Auto-hide message after 5 seconds
+
+```javascript
+if (response.ok) {
+    setStatus({ type: 'success', message: '¡Gracias! Tu mensaje ha sido enviado correctamente.' });
+    setFormData({ nombre: '', apellido: '', email: '', telefono: '', cuerpo: '' });
+    setCaptchaToken(null);
+    captchaRef.current.reset();
+    setTimeout(() => setStatus(null), 5000);
+}
+```
+
+### Error Handling
+
+On error:
+1. Show error message
+2. Keep form data (allow retry)
+3. Auto-hide message after 5 seconds
+
+```javascript
+catch (error) {
+    console.error('Error:', error);
+    setStatus({ type: 'error', message: error.message || 'Hubo un error al enviar el mensaje.' });
+    setTimeout(() => setStatus(null), 5000);
+}
+```
+
+## Status Messages
+
+### Status Types
+
+```javascript
+const [status, setStatus] = useState(null);
+
+// Status object structure:
+{
+    type: 'loading' | 'success' | 'error',
+    message: string
+}
+```
+
+### Rendering Status
+
+```jsx
+{status && (
+    <div className={`status-message ${status.type}`}>
+        {status.message}
+    </div>
+)}
+```
+
+### Messages
+
+- **Loading**: "Enviando..."
+- **Success**: "¡Gracias! Tu mensaje ha sido enviado correctamente."
+- **Error (no captcha)**: "Por favor, completa el captcha."
+- **Error (server)**: Custom error or "Hubo un error al enviar el mensaje."
+
+## Team Avatars
+
+Displays team member photos in overlapping layout:
+
+```jsx
+<div className="founders-avatars">
+    <div style={{ display: 'flex' }}>
+        <img src="/assets/equipo/maximiliano.webp" alt="Maxi" style={{ width: '45px', height: '45px', borderRadius: '50%', objectFit: 'cover', border: '2px solid white' }} />
+        <img src="/assets/equipo/salva.webp" alt="Salva" style={{ width: '45px', height: '45px', borderRadius: '50%', objectFit: 'cover', border: '2px solid white', marginLeft: '-15px' }} />
+        <img src="/assets/equipo/romina.webp" alt="Romina" style={{ width: '45px', height: '45px', borderRadius: '50%', objectFit: 'cover', border: '2px solid white', marginLeft: '-15px' }} />
+        <img src="/assets/equipo/pablo.webp" alt="Pablo" style={{ width: '45px', height: '45px', borderRadius: '50%', objectFit: 'cover', border: '2px solid white', marginLeft: '-15px' }} />
+        <img src="/assets/equipo/jenifer.webp" alt="Yenifer" style={{ width: '45px', height: '45px', borderRadius: '50%', objectFit: 'cover', border: '2px solid white', marginLeft: '-15px' }} />
+    </div>
+    <div>
+        <p>Habla directo con nosotros online</p>
+        <p>Equipo Plugin</p>
+    </div>
+</div>
+```
+
+Avatar order: Maximiliano, Salvador, Romina, Pablo, Yenifer
+
+## Layout Structure
+
+```
+┌─────────────────────┬─────────────────────┐
+│ Left Column         │ Right Column        │
+├─────────────────────┼─────────────────────┤
+│ Hablemos de tu      │ O escribinos por acá│
+│ proyecto            │                     │
+│                     │ [Nombre] [Apellido] │
+│ [Intro text]        │ [Email]             │
+│                     │ [Teléfono (Op.)]    │
+│ [Calendly Button]   │ [Mensaje]           │
+│                     │                     │
+│ ✓ Visión integral   │ [reCAPTCHA]         │
+│ ✓ Tecnología +     │                     │
+│   Estrategia        │ [Status Message]    │
+│ ✓ Plan de acción    │                     │
+│                     │ [Submit Button]     │
+│ [Team Avatars]      │                     │
+│ Equipo Plugin       │                     │
+│                     │                     │
+│ Punta del Este, UY  │                     │
+│ info@plugin.uy      │                     │
+└─────────────────────┴─────────────────────┘
+```
+
+## Styling Classes
+
+- `.contact-section` - Main section container
+- `.section-divider-dot` - Dotted divider style
+- `.contact-wrapper` - Wrapper for two-column layout
+- `.two-column-layout` - Two-column grid class
+- `.contact-info-column` - Left info column
+- `.contact-subtitle` - Subtitle heading
+- `.contact-intro` - Intro paragraph
+- `.value-props` - Value propositions list
+- `.founders-avatars` - Team avatars section
+- `.contact-details-mini` - Contact details
+- `.contact-form-column` - Right form column
+- `.form-header` - Form header
+- `.contact-form-grid` - Form grid layout
+- `.form-row` - Row for side-by-side fields
+- `.form-field` - Individual form field
+- `.status-message` - Status message container
+- `.status-message.loading` - Loading state
+- `.status-message.success` - Success state
+- `.status-message.error` - Error state
+- `.submit-btn` - Submit button
+
+## Responsive Behavior
+
+- **Desktop**: Two columns side by side
+- **Tablet**: May stack to single column
+- **Mobile**: Single column, form below info
+
+## State Management
+
+Four state variables:
+
+```javascript
+const [formData, setFormData] = useState({ ... });      // Form field values
+const [status, setStatus] = useState(null);             // Submission status
+const [errors, setErrors] = useState({});               // Validation errors
+const [captchaToken, setCaptchaToken] = useState(null); // reCAPTCHA token
+```
+
+One ref:
+
+```javascript
+const captchaRef = useRef(null);  // reCAPTCHA component reference
+```
+
+## Dependencies
+
+```json
+{
+  "react-google-recaptcha": "^3.x.x"
+}
+```
+
+External scripts (loaded dynamically):
+- Calendly widget CSS
+- Calendly widget JS
+
+## Environment Variables Required
+
+```bash
+VITE_RECAPTCHA_SITE_KEY=your_site_key_here
+```
+
+<Warning>
+The form will not submit without a valid reCAPTCHA token. Ensure the environment variable is set in production.
+</Warning>
+
+## Button States
+
+```jsx
+<button 
+    type="submit" 
+    className="btn btn-primary submit-btn" 
+    disabled={status?.type === 'loading' || status?.type === 'success'}
+>
+    {status?.type === 'loading' ? 'Enviando...' : 'Enviar Mensaje'}
+</button>
+```
+
+**Disabled when**:
+- Form is submitting (loading)
+- Form was successfully submitted (success)
+
+## API Requirements
+
+The backend endpoint `/api/send-email` should:
+
+1. Accept POST requests
+2. Validate reCAPTCHA token server-side
+3. Process form data (nombre, apellido, email, telefono, message)
+4. Send email notification
+5. Return appropriate status codes:
+   - 200 OK on success
+   - 400/500 with error message on failure
+
+<Info>
+Server-side reCAPTCHA verification is critical for security. Never trust client-side validation alone.
+</Info>

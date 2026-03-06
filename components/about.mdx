@@ -1,0 +1,430 @@
+---
+title: About Component
+description: Team showcase with interactive flip cards displaying member bios and skills
+---
+
+# About Component
+
+The About component showcases the Plugin Agency team through interactive flip cards with member photos, roles, bios, and skills.
+
+## Overview
+
+This section:
+- Displays 5 team members in a grid layout
+- Features interactive flip cards (click to flip)
+- Shows member photos, names, and roles on front
+- Reveals detailed bios and skills on back
+- Includes error handling for missing images
+
+## Features
+
+- **Interactive Cards**: Click to flip between front and back
+- **Flip Animation**: Smooth 3D flip transition
+- **Image Fallback**: Graceful handling of missing images
+- **Skills Tags**: Visual skill chips on card back
+- **Scrollable Bio**: Long bios scroll within card
+- **Close Button**: Explicit close control on back side
+- **State Management**: Individual flip state per card
+
+## Props
+
+The main `About` component accepts no props.
+
+### TeamMemberCard Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `member` | Object | Yes | Team member data object |
+
+#### Member Object Structure
+
+```typescript
+{
+  name: string;        // Member's full name
+  role: string;        // Job title/role
+  bio: string;         // Biography text
+  skills: string[];    // Array of skill tags
+  image: string;       // Path to member photo
+}
+```
+
+## Usage
+
+```jsx
+import About from './components/About';
+
+function App() {
+  return (
+    <>
+      {/* Other sections */}
+      <About />
+      {/* More sections */}
+    </>
+  );
+}
+```
+
+## Team Data Structure
+
+The component includes 5 team members:
+
+```javascript
+const team = [
+    {
+        name: "Maximiliano Pérez",
+        role: "Founder & Director",
+        bio: "Lidera Plugin: visión, desarrollo de negocio y equipos. Integra comunidad, productora y agencia en un ecosistema.",
+        skills: [
+            "Community Builder",
+            "Strategic Planning",
+            "Team Leadership",
+            "Business Development"
+        ],
+        image: "/assets/equipo/maximiliano.webp"
+    },
+    {
+        name: "Salvador Castro",
+        role: "Web Developer",
+        bio: "Responsable de Desarrollo Web y Arquitectura de Soluciones.",
+        skills: [
+            "React Development",
+            "Python Backend",
+            "PHP Solutions",
+            "Full Stack"
+        ],
+        image: "/assets/equipo/salva.webp"
+    },
+    {
+        name: "Yenifer Núñez",
+        role: "Marketing & Brand",
+        bio: "Responsable de la construcción y gestión integral de la marca.",
+        skills: [
+            "Strategy",
+            "Campaigns",
+            "Content",
+            "Events",
+            "Brand experience"
+        ],
+        image: "/assets/equipo/jenifer.webp"
+    },
+    {
+        name: "Pablo González",
+        role: "Automation Specialist",
+        bio: "Especialista en automatización y flujos de trabajo con IA.",
+        skills: [
+            "n8n Workflows",
+            "Low Code Platforms",
+            "Process Automation",
+            "Integration Logic"
+        ],
+        image: "/assets/equipo/pablo.webp"
+    },
+    {
+        name: "Romina Garbino",
+        role: "PR & Alianzas",
+        bio: "Responsable de Relaciones Públicas y visibilidad.",
+        skills: [
+            "Public Relations",
+            "Conflux Ambassador",
+            "Virtual Assistance",
+            "Community Management"
+        ],
+        image: "/assets/equipo/romina.webp"
+    }
+];
+```
+
+## Code Implementation
+
+```jsx title="About.jsx"
+import React, { useState } from 'react';
+
+const TeamMemberCard = ({ member }) => {
+    const [isFlipped, setIsFlipped] = useState(false);
+
+    const handleFlip = () => {
+        setIsFlipped(!isFlipped);
+    };
+
+    return (
+        <div className={`team-card-ds ${isFlipped ? 'flipped' : ''}`} onClick={handleFlip}>
+            <div className="card-inner-ds">
+                {/* Front Side */}
+                <div className="card-front-ds">
+                    <div className="card-image-wrapper">
+                        <img
+                            src={member.image}
+                            alt={member.name}
+                            className="member-image-ds"
+                            onError={(e) => { 
+                                e.target.style.display = 'none'; 
+                                e.target.parentNode.style.backgroundColor = '#ccc' 
+                            }}
+                        />
+                        <div className="card-overlay-ds"></div>
+                        <div className="card-content-ds">
+                            <h3 className="member-name-ds">{member.name}</h3>
+                            <p className="member-role-ds">{member.role}</p>
+                            <button className="more-info-btn">
+                                <span>+ Info</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Back Side */}
+                <div className="card-back-ds">
+                    <div className="card-back-bg" style={{ backgroundImage: `url(${member.image})` }}></div>
+                    <div className="card-back-overlay"></div>
+                    <div className="card-back-content">
+                        <h3 className="member-name-back">{member.name}</h3>
+                        <p className="member-role-back">{member.role}</p>
+
+                        <div className="member-bio-scroll">
+                            <p className="member-bio-text">{member.bio}</p>
+                        </div>
+
+                        <div className="member-skills-container">
+                            <h4 className="skills-title">Skills</h4>
+                            <div className="skills-tags">
+                                {member.skills.map((skill, index) => (
+                                    <span key={index} className="skill-tag">{skill}</span>
+                                ))}
+                            </div>
+                        </div>
+
+                        <button className="close-btn" onClick={(e) => {
+                            e.stopPropagation();
+                            handleFlip();
+                        }}>
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const About = () => {
+    const team = [
+        // ... team array as shown above
+    ];
+
+    return (
+        <section id="about" className="section accent-bg about-section section-divider-dot">
+            <div className="container">
+                <h2 className="section-title">Nosotros</h2>
+
+                <div className="about-intro-container">
+                    <p className="about-lead">Somos un equipo multidisciplinario con experiencia en estrategia, marca, contenidos, diseño web, automatización e IA aplicada.</p>
+                </div>
+
+                <div className="team-grid-ds">
+                    {team.map((member, index) => (
+                        <TeamMemberCard key={index} member={member} />
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default About;
+```
+
+## Team Members
+
+### Maximiliano Pérez - Founder & Director
+**Skills**: Community Builder, Strategic Planning, Team Leadership, Business Development
+
+**Bio**: Leads Plugin's vision, business development, and teams. Integrates community, production, and agency into an ecosystem.
+
+### Salvador Castro - Web Developer
+**Skills**: React Development, Python Backend, PHP Solutions, Full Stack
+
+**Bio**: Responsible for Web Development and Solutions Architecture.
+
+### Yenifer Núñez - Marketing & Brand
+**Skills**: Strategy, Campaigns, Content, Events, Brand experience
+
+**Bio**: Responsible for comprehensive brand building and management.
+
+### Pablo González - Automation Specialist
+**Skills**: n8n Workflows, Low Code Platforms, Process Automation, Integration Logic
+
+**Bio**: Specialist in automation and AI-powered workflows.
+
+### Romina Garbino - PR & Alianzas
+**Skills**: Public Relations, Conflux Ambassador, Virtual Assistance, Community Management
+
+**Bio**: Responsible for Public Relations and visibility.
+
+## Card Flip Interaction
+
+### Click to Flip
+
+The entire card is clickable to trigger the flip:
+
+```jsx
+<div className={`team-card-ds ${isFlipped ? 'flipped' : ''}`} onClick={handleFlip}>
+```
+
+### Close Button (Back Side)
+
+The close button uses `stopPropagation()` to prevent the card from re-flipping:
+
+```jsx
+<button className="close-btn" onClick={(e) => {
+    e.stopPropagation();
+    handleFlip();
+}}>
+```
+
+<Note>
+Without `stopPropagation()`, clicking the close button would trigger both the button's onClick and the card's onClick, causing the card to flip back immediately.
+</Note>
+
+## Image Error Handling
+
+Graceful fallback for missing images:
+
+```jsx
+onError={(e) => { 
+    e.target.style.display = 'none'; 
+    e.target.parentNode.style.backgroundColor = '#ccc' 
+}}
+```
+
+This:
+1. Hides the broken image
+2. Shows a gray background as placeholder
+
+## Styling Classes
+
+### Main Component
+- `.about-section` - Section container
+- `.accent-bg` - Accent background color
+- `.section-divider-dot` - Dotted divider style
+- `.about-intro-container` - Intro text container
+- `.about-lead` - Lead paragraph styling
+- `.team-grid-ds` - Team member grid
+
+### Card Component
+- `.team-card-ds` - Card container
+- `.team-card-ds.flipped` - Flipped state
+- `.card-inner-ds` - Inner card wrapper (for 3D flip)
+- `.card-front-ds` - Front side of card
+- `.card-back-ds` - Back side of card
+- `.card-image-wrapper` - Image container
+- `.member-image-ds` - Member photo
+- `.card-overlay-ds` - Gradient overlay on front
+- `.card-content-ds` - Content on front
+- `.more-info-btn` - "+ Info" button
+- `.card-back-bg` - Background image on back
+- `.card-back-overlay` - Overlay on back
+- `.card-back-content` - Content on back
+- `.member-bio-scroll` - Scrollable bio container
+- `.member-skills-container` - Skills section
+- `.skills-tags` - Skills wrapper
+- `.skill-tag` - Individual skill chip
+- `.close-btn` - Close button
+
+## Card Structure
+
+### Front Side
+
+```
+┌─────────────────┐
+│                  │
+│  [Member Photo]   │
+│   with overlay    │
+│                  │
+│  Member Name     │
+│  Role            │
+│  [+ Info Button] │
+└─────────────────┘
+```
+
+### Back Side
+
+```
+┌─────────────────┐
+│ [Blurred Photo]  │
+│                  │
+│ Member Name      │
+│ Role             │
+│                  │
+│ Bio text...      │
+│ (scrollable)     │
+│                  │
+│ Skills:          │
+│ [Tag] [Tag] ...  │
+│                  │
+│            [✕]   │
+└─────────────────┘
+```
+
+## Responsive Behavior
+
+- **Desktop**: Multi-column grid (likely 3 columns)
+- **Tablet**: 2-column grid
+- **Mobile**: Single column or 2-column grid
+
+## State Management
+
+Each card manages its own flip state independently:
+
+```jsx
+const [isFlipped, setIsFlipped] = useState(false);
+```
+
+This allows multiple cards to be flipped simultaneously without interfering with each other.
+
+## Accessibility Considerations
+
+<Warning>
+This component could benefit from accessibility improvements:
+- Add keyboard navigation (Enter/Space to flip)
+- Add ARIA labels for screen readers
+- Consider focus management when flipping
+- Ensure sufficient color contrast on overlays
+</Warning>
+
+## Image Paths
+
+All member images located in: `/assets/equipo/`
+
+- `maximiliano.webp`
+- `salva.webp`
+- `jenifer.webp`
+- `pablo.webp`
+- `romina.webp`
+
+<Info>
+Images use WebP format for optimal file size and quality.
+</Info>
+
+## Dependencies
+
+- React hooks: `useState`
+- No external libraries required
+
+## Adding New Team Members
+
+To add a new team member:
+
+1. Add a new object to the `team` array
+2. Include all required fields (name, role, bio, skills, image)
+3. Place the member's photo in `/assets/equipo/`
+4. Use WebP format for consistency
+
+```javascript
+{
+    name: "New Member",
+    role: "Position Title",
+    bio: "Brief biography...",
+    skills: ["Skill 1", "Skill 2", "Skill 3"],
+    image: "/assets/equipo/newmember.webp"
+}
+```

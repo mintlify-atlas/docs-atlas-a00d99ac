@@ -1,0 +1,216 @@
+---
+title: Method Component
+description: Methodology section explaining the 5-layer system approach
+---
+
+# Method Component
+
+The Method component explains Plugin Agency's systematic approach through 5 key layers, presented in a numbered card grid.
+
+## Overview
+
+This section:
+- Explains the "Plugin como sistema" methodology
+- Displays 5 strategic layers in a grid
+- Uses numbered cards with code-style formatting
+- Emphasizes the integrated system approach
+- No external dependencies (pure React)
+
+## Features
+
+- **Data-Driven**: Array-based rendering of method layers
+- **Numbered Cards**: Sequential numbering with zero-padding (01, 02, etc.)
+- **Code Aesthetics**: Numbers formatted as code comments `// 01`
+- **Responsive Grid**: Adapts to different screen sizes
+- **Highlighted Heading**: Emphasized "sistema" keyword
+
+## Props
+
+This component accepts no props.
+
+## Usage
+
+```jsx
+import Method from './components/Method';
+
+function App() {
+  return (
+    <>
+      {/* Other sections */}
+      <Method />
+      {/* More sections */}
+    </>
+  );
+}
+```
+
+## Layers Data Structure
+
+The component uses a `LAYERS` array with 5 methodology layers:
+
+```javascript
+const LAYERS = [
+    {
+        title: "Estrategia y posicionamiento",
+        text: "Para decidir qué decir, a quién y qué priorizar en cada etapa."
+    },
+    {
+        title: "Marca y comunicación",
+        text: "Para que el mensaje sea coherente, memorable y representativo."
+    },
+    {
+        title: "Contenidos y redes",
+        text: "Para construir visibilidad sostenida con propósito."
+    },
+    {
+        title: "Web y producto digital",
+        text: "Para convertir visitas en oportunidades reales."
+    },
+    {
+        title: "Automatización e IA aplicada",
+        text: "Para escalar operaciones sin sumar caos."
+    }
+];
+```
+
+## Code Implementation
+
+```jsx title="Method.jsx"
+const LAYERS = [
+    {
+        title: "Estrategia y posicionamiento",
+        text: "Para decidir qué decir, a quién y qué priorizar en cada etapa."
+    },
+    {
+        title: "Marca y comunicación",
+        text: "Para que el mensaje sea coherente, memorable y representativo."
+    },
+    {
+        title: "Contenidos y redes",
+        text: "Para construir visibilidad sostenida con propósito."
+    },
+    {
+        title: "Web y producto digital",
+        text: "Para convertir visitas en oportunidades reales."
+    },
+    {
+        title: "Automatización e IA aplicada",
+        text: "Para escalar operaciones sin sumar caos."
+    }
+];
+
+const Method = () => {
+    return (
+        <section id="method" className="method-section section-divider">
+            <div className="container">
+                <p className="method-eyebrow">// cómo trabajamos</p>
+                <h2 className="section-title">Plugin como <span>sistema</span></h2>
+                <p style={{ color: 'var(--text-2)', textAlign: 'center', maxWidth: '580px', margin: '-2rem auto 3.5rem', fontSize: '0.95rem', lineHeight: '1.7' }}>
+                    Trabajamos como agencia + sistema: conectamos las capas críticas del proyecto para que todo empuje en la misma dirección.
+                </p>
+
+                <div className="method-grid">
+                    {LAYERS.map((layer, i) => (
+                        <div key={i} className="method-card">
+                            <p className="method-number">// {String(i + 1).padStart(2, '0')}</p>
+                            <h3>{layer.title}</h3>
+                            <p>{layer.text}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default Method;
+```
+
+## The 5 Layers
+
+### 1. Estrategia y posicionamiento
+Defining what to say, to whom, and what to prioritize at each stage.
+
+### 2. Marca y comunicación
+Ensuring the message is coherent, memorable, and representative.
+
+### 3. Contenidos y redes
+Building sustained visibility with purpose.
+
+### 4. Web y producto digital
+Converting visits into real opportunities.
+
+### 5. Automatización e IA aplicada
+Scaling operations without adding chaos.
+
+<Note>
+Each layer builds on the previous one, creating an integrated system rather than isolated services.
+</Note>
+
+## Styling Classes
+
+- `.method-section` - Main section container
+- `.section-divider` - Visual separator between sections
+- `.method-eyebrow` - Eyebrow text with code-style formatting
+- `.section-title` - Main heading with highlighted span
+- `.method-grid` - Grid container for method cards
+- `.method-card` - Individual method card
+- `.method-number` - Numbered label with code comment style
+
+## Number Formatting
+
+The numbers are formatted with zero-padding:
+
+```javascript
+String(i + 1).padStart(2, '0')
+```
+
+This produces:
+- `// 01`
+- `// 02`
+- `// 03`
+- `// 04`
+- `// 05`
+
+## Layout Structure
+
+1. **Header Section**
+   - Eyebrow text: `// cómo trabajamos`
+   - Main title with highlighted "sistema"
+   - Descriptive subtitle (max-width: 580px, centered)
+
+2. **Method Grid**
+   - 5 method cards in responsive grid
+   - Each card contains number, title, and description
+
+## Responsive Behavior
+
+- **Desktop**: Multi-column grid
+- **Tablet**: 2-column grid
+- **Mobile**: Single column stack
+
+## Visual Design
+
+Key design elements:
+
+- **Code Aesthetics**: `//` prefix for numbers mimics code comments
+- **Centered Content**: All text centered for visual balance
+- **Highlighted Keywords**: "sistema" emphasized in heading
+- **Consistent Spacing**: Negative margin to adjust subtitle position
+
+## Content Purpose
+
+The text structure follows the pattern:
+- "Para [purpose]" - Each layer explains its "why"
+- Focus on outcomes rather than deliverables
+- Clear, concise explanations
+
+## Dependencies
+
+- React (no external packages)
+- Pure functional component
+- No state management needed
+
+<Info>
+This is a pure presentational component with no interactivity or state, making it lightweight and easy to render.
+</Info>

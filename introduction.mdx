@@ -1,0 +1,140 @@
+---
+title: Introduction
+description: Welcome to Plugin Agency - A modern digital agency landing page built with React and Vite
+---
+
+# Plugin Agency
+
+Welcome to **Plugin Agency**, a responsive single-page application built for a digital agency specializing in web development, automation, and blockchain solutions. This modern landing page showcases the power of React 19 combined with Vite's lightning-fast build tooling.
+
+<Note>
+  Plugin Agency is live at [plugin.uy](https://plugin.uy/) - check out the production site to see the platform in action.
+</Note>
+
+## What is Plugin Agency?
+
+Plugin Agency is a production-ready landing page template designed for digital agencies. It features a sleek, responsive interface with dynamic video backgrounds, team showcases, service overviews, and a fully functional contact form with spam protection.
+
+The project demonstrates modern web development practices with React 19, server-side email handling via Nodemailer, and Google reCAPTCHA integration for security.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Modern Design" icon="palette">
+    Sleek, responsive interface with a focus on user experience, optimized for desktop, tablet, and mobile devices.
+  </Card>
+  
+  <Card title="Video Hero" icon="video">
+    Dynamic video background for a strong visual impact on the landing section.
+  </Card>
+  
+  <Card title="Team Showcase" icon="users">
+    Dedicated section highlighting your expert team members with custom avatars.
+  </Card>
+  
+  <Card title="Services Overview" icon="briefcase">
+    Clear presentation of agency capabilities and service offerings.
+  </Card>
+  
+  <Card title="Contact Form" icon="envelope">
+    Functional contact form integrated with Nodemailer for email delivery and Google reCAPTCHA for spam protection.
+  </Card>
+  
+  <Card title="Responsive Layout" icon="mobile">
+    Fully responsive design with hamburger menu for mobile devices.
+  </Card>
+</CardGroup>
+
+## Tech Stack
+
+Plugin Agency is built with cutting-edge technologies:
+
+<CardGroup cols={2}>
+  <Card title="React 19.2" icon="react">
+    The latest version of React for building interactive user interfaces.
+  </Card>
+  
+  <Card title="Vite 7.2.4" icon="bolt">
+    Lightning-fast build tool with instant hot module replacement.
+  </Card>
+  
+  <Card title="Nodemailer 7.0" icon="paper-plane">
+    Server-side email handling for the contact form.
+  </Card>
+  
+  <Card title="Google reCAPTCHA v2" icon="shield">
+    Spam protection for form submissions.
+  </Card>
+</CardGroup>
+
+### Additional Technologies
+
+- **Styling**: Vanilla CSS with CSS Variables, Flexbox, and Grid
+- **Backend/API**: Node.js with Express-like handler
+- **Icons**: Lucide React for modern icon components
+- **Analytics**: Vercel Analytics for performance monitoring
+- **Linting**: ESLint 9.39.1 for code quality
+
+## Architecture Overview
+
+The project follows a clean, modular architecture:
+
+```
+plugin-agency/
+├── api/                  # Backend API logic
+│   └── send-email.js     # Email sending handler
+├── public/
+│   ├── assets/
+│   │   ├── equipo/       # Team member avatars
+│   │   ├── hero/         # Hero section video background
+│   │   └── logo/         # Agency logo
+│   └── vite.svg
+├── src/
+│   ├── components/
+│   │   ├── Navbar.jsx    # Navigation bar with responsive menu
+│   │   ├── Hero.jsx      # Hero section with video background
+│   │   ├── About.jsx     # Team showcase section
+│   │   ├── Services.jsx  # Services overview
+│   │   ├── Contact.jsx   # Contact form with validation & captcha
+│   │   └── Footer.jsx    # Footer component
+│   ├── App.jsx           # Main application layout
+│   ├── App.css           # App-specific styles
+│   ├── main.jsx          # Entry point
+│   └── index.css         # Global styles and CSS variables
+├── index.html            # HTML entry point
+├── vite.config.js        # Vite configuration
+└── package.json          # Dependencies and scripts
+```
+
+## Core Components
+
+The application is built with six main components:
+
+- **Navbar**: Responsive navigation bar with hamburger menu for mobile devices
+- **Hero**: Landing section with dynamic video background
+- **About**: Team showcase featuring all agency members with avatars
+- **Services**: Overview of agency services and capabilities
+- **Contact**: Client contact form with real-time validation and email submission
+- **Footer**: Page footer with additional information
+
+## The Team
+
+Plugin Agency showcases a diverse team of specialists:
+
+- **Maximiliano Perez**: Strategy Lead
+- **Salva Castro**: Web Developer
+- **Yenifer Núñez**: Marketing & Experience
+- **Pablo**: Automation Specialist
+- **Romina Garbino**: Blockchain Ambassador & Virtual Assistant
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Get up and running in minutes with our quick start guide.
+  </Card>
+  
+  <Card title="Installation" icon="download" href="/installation">
+    Detailed installation instructions and configuration.
+  </Card>
+</CardGroup>

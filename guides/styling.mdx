@@ -1,0 +1,613 @@
+---
+title: 'Styling Guide'
+description: 'Learn about the CSS architecture, theming system, and responsive design patterns in Plugin Agency'
+icon: 'paintbrush'
+---
+
+## Overview
+
+Plugin Agency uses a custom CSS design system with CSS variables, a dark tech aesthetic, and mobile-first responsive design. All styles are written in vanilla CSS without preprocessors or CSS-in-JS.
+
+## CSS Architecture
+
+The styling is organized across two main files:
+
+- **`src/index.css`** - Design system, global styles, components
+- **`src/App.css`** - Minimal (cleared for component-based styling)
+
+### File Structure
+
+```
+src/
+├── index.css          # Main stylesheet (1850+ lines)
+├── App.css            # Cleared (component styles in index.css)
+└── assets/
+    └── fonts/         # Custom fonts (Garet family)
+```
+
+## Design System Tokens
+
+The project uses CSS custom properties (variables) for consistent theming.
+
+### Color Tokens
+
+```css index.css
+:root {
+  /* Background layers */
+  --bg: #05050a;
+  --bg-2: #0a0a14;
+  --bg-3: #0f0f1e;
+  
+  /* Surface colors */
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-2: rgba(255, 255, 255, 0.07);
+  
+  /* Borders */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(0, 212, 255, 0.35);
+  
+  /* Brand colors */
+  --cyan: #00d4ff;
+  --cyan-dim: rgba(0, 212, 255, 0.15);
+  --violet: #7c3aed;
+  --violet-dim: rgba(124, 58, 237, 0.15);
+  --green: #10b981;
+  --red: #ef4444;
+  
+  /* Text colors */
+  --text: #e2e8f0;
+  --text-2: #94a3b8;
+  --text-3: #64748b;
+  --white: #ffffff;
+}
+```
+
+**Usage Example:**
+
+```css
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.card:hover {
+  border-color: var(--border-glow);
+  box-shadow: var(--glow-cyan);
+}
+```
+
+### Typography Tokens
+
+```css index.css
+:root {
+  /* Font families */
+  --font-sans: 'Garet', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+```
+
+**Custom Fonts:**
+
+```css index.css
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@font-face {
+  font-family: 'Garet';
+  src: url('./assets/fonts/Garet-Book.woff2') format('woff2'),
+       url('./assets/fonts/Garet-Book.woff') format('woff'),
+       url('./assets/fonts/Garet-Book.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Garet';
+  src: url('./assets/fonts/Garet-Heavy.woff2') format('woff2'),
+       url('./assets/fonts/Garet-Heavy.woff') format('woff'),
+       url('./assets/fonts/Garet-Heavy.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+```
+
+<Note>
+  Using `font-display: swap` ensures text remains visible during font loading, improving perceived performance.
+</Note>
+
+### Spacing & Layout Tokens
+
+```css index.css
+:root {
+  --radius: 12px;
+  --radius-lg: 20px;
+  --max-width: 1200px;
+}
+```
+
+### Glow Effects
+
+```css index.css
+:root {
+  --glow-cyan: 0 0 30px rgba(0, 212, 255, 0.25), 0 0 60px rgba(0, 212, 255, 0.1);
+  --glow-violet: 0 0 30px rgba(124, 58, 237, 0.25), 0 0 60px rgba(124, 58, 237, 0.1);
+}
+```
+
+## Component Patterns
+
+### Glass Morphism Cards
+
+```css index.css
+.glass {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius);
+}
+
+.glass:hover {
+  border-color: var(--border-glow);
+  box-shadow: var(--glow-cyan);
+}
+```
+
+**Usage:**
+
+```jsx
+<div className="glass">
+  <h3>Glass Card</h3>
+  <p>Semi-transparent card with backdrop blur</p>
+</div>
+```
+
+### Buttons
+
+```css index.css
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--cyan), #0099cc);
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 35px rgba(0, 212, 255, 0.5);
+}
+
+.btn-outline {
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  background: var(--surface);
+}
+
+.btn-outline:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+}
+```
+
+### Gradient Text
+
+```css index.css
+.section-title span {
+  background: linear-gradient(135deg, var(--cyan), var(--violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+```
+
+**Usage:**
+
+```jsx
+<h2 className="section-title">
+  Our <span>Services</span>
+</h2>
+```
+
+## Animations
+
+### Grid Background Animation
+
+```css index.css
+.grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridPan 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes gridPan {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 60px 60px;
+  }
+}
+```
+
+### Pulse Animation
+
+```css index.css
+.hero-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 0 5px rgba(0, 212, 255, 0);
+  }
+}
+```
+
+### Fade In Up
+
+```css index.css
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+```
+
+## Responsive Design
+
+### Mobile-First Approach
+
+The design is built mobile-first, with breakpoints for larger screens:
+
+```css index.css
+/* Mobile styles (base) */
+section {
+  padding: 4rem 0;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  section {
+    padding: 6rem 0;
+  }
+}
+```
+
+### Breakpoints
+
+```css index.css
+/* Tablet: 768px */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1.25rem;
+  }
+  
+  .packs-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .two-column-layout {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
+
+/* Mobile: 480px */
+@media (max-width: 480px) {
+  .team-grid-ds {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+  }
+  
+  .section-title {
+    font-size: 1.75rem;
+  }
+}
+```
+
+### Fluid Typography
+
+```css index.css
+/* Scales between 2rem and 3rem based on viewport */
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+/* Hero title scales between 2.5rem and 5rem */
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+}
+
+/* Subtitle scales between 1rem and 1.2rem */
+.hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+}
+```
+
+<Note>
+  Using `clamp()` ensures typography scales smoothly across all screen sizes without hard breakpoints.
+</Note>
+
+## Hamburger Menu Implementation
+
+The mobile navigation uses a hamburger menu with smooth transitions:
+
+### HTML Structure
+
+```jsx
+<button className="hamburger" onClick={toggleMenu}>
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+```
+
+### CSS
+
+```css index.css
+.hamburger {
+  display: none; /* Hidden on desktop */
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 20px;
+  background: transparent;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--text-2);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Animated X when active */
+.hamburger.active span:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+/* Mobile menu */
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+  
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Hidden off-screen */
+    height: 100vh;
+    width: 75%;
+    max-width: 300px;
+    background: rgba(5, 5, 10, 0.97);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    justify-content: center;
+    transition: right 0.3s ease;
+    border-left: 1px solid var(--border);
+    z-index: 999;
+  }
+  
+  .nav-links.active {
+    right: 0; /* Slide in */
+  }
+}
+```
+
+### JavaScript (React)
+
+```jsx Navbar.jsx
+const [menuOpen, setMenuOpen] = useState(false)
+
+const toggleMenu = () => setMenuOpen(!menuOpen)
+
+return (
+  <>
+    <button 
+      className={`hamburger ${menuOpen ? 'active' : ''}`}
+      onClick={toggleMenu}
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <nav className={`nav-links ${menuOpen ? 'active' : ''}`}>
+      {/* Nav items */}
+    </nav>
+  </>
+)
+```
+
+## Layout Utilities
+
+### Container
+
+```css index.css
+.container {
+  max-width: var(--max-width); /* 1200px */
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1.25rem;
+  }
+}
+```
+
+### Section Spacing
+
+```css index.css
+section {
+  padding: 6rem 0;
+}
+
+@media (max-width: 768px) {
+  section {
+    padding: 4rem 0;
+  }
+}
+```
+
+### Grid Layouts
+
+```css index.css
+/* Auto-fit grid with minimum 280px columns */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+/* Fixed 3-column grid */
+.packs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+/* Two-column layout */
+.two-column-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+}
+```
+
+## Advanced Effects
+
+### Glow Orbs
+
+```css index.css
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+.orb-cyan {
+  background: rgba(0, 212, 255, 0.15);
+}
+
+.orb-violet {
+  background: rgba(124, 58, 237, 0.15);
+}
+```
+
+**Usage:**
+
+```jsx
+<div className="hero-bg">
+  <div className="orb orb-cyan" style={{ width: '400px', height: '400px', top: '10%', left: '5%' }} />
+  <div className="orb orb-violet" style={{ width: '500px', height: '500px', bottom: '20%', right: '10%' }} />
+</div>
+```
+
+### Infinite Scroll
+
+```css index.css
+.tb-track {
+  display: flex;
+  gap: 1.5rem;
+  width: max-content;
+  animation: tb-scroll-forward 35s linear infinite;
+}
+
+.tb-track-wrapper:hover .tb-track {
+  animation-play-state: paused;
+}
+
+@keyframes tb-scroll-forward {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+```
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use CSS Variables" icon="palette">
+    Always use design tokens instead of hardcoded values for consistency and easy theming.
+  </Card>
+  
+  <Card title="Mobile-First" icon="mobile">
+    Write base styles for mobile, then add `@media` queries for larger screens.
+  </Card>
+  
+  <Card title="Performance" icon="gauge-high">
+    Use `transform` and `opacity` for animations (GPU-accelerated). Avoid animating `width`, `height`, or `margin`.
+  </Card>
+  
+  <Card title="Accessibility" icon="universal-access">
+    Ensure sufficient color contrast (WCAG AA minimum). Use semantic HTML and ARIA labels.
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Configuration" icon="gear" href="/guides/configuration">
+    Learn about Vite and ESLint configuration
+  </Card>
+  <Card title="Components" icon="puzzle-piece" href="/components/navbar">
+    Explore React component architecture
+  </Card>
+</CardGroup>

@@ -1,0 +1,457 @@
+---
+title: 'Environment Variables'
+description: 'Configure email and reCAPTCHA environment variables for the contact form'
+icon: 'key'
+---
+
+## Overview
+
+The Plugin Agency contact form requires several environment variables for email delivery and spam protection via Google reCAPTCHA. This guide covers all required and optional variables, plus setup instructions.
+
+## Required Variables
+
+<Warning>
+  **Critical** - The contact form will not work without these variables configured:
+</Warning>
+
+### EMAIL_USER
+
+**Description:** Email account username for sending contact form submissions.
+
+```bash .env
+EMAIL_USER=info@plugin.uy
+```
+
+**Usage:** Authenticates with the SMTP server to send emails.
+
+### EMAIL_PASS
+
+**Description:** Email account password or app-specific password.
+
+```bash .env
+EMAIL_PASS=your-app-password-here
+```
+
+<Warning>
+  **Security:** Never commit `.env` files to Git. Use `.env.local` for local development and configure variables in Vercel for production.
+</Warning>
+
+**For Gmail:** Use an [App Password](#gmail-app-password-setup), not your regular Gmail password.
+
+### VITE_RECAPTCHA_SITE_KEY
+
+**Description:** Google reCAPTCHA v2 site key (public key).
+
+```bash .env
+VITE_RECAPTCHA_SITE_KEY=6LdXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+<Note>
+  Variables prefixed with `VITE_` are exposed to the browser. This is intentional for the site key (it's public).
+</Note>
+
+**Usage:** Renders the reCAPTCHA widget on the contact form.
+
+### RECAPTCHA_SECRET_KEY
+
+**Description:** Google reCAPTCHA v2 secret key (private key).
+
+```bash .env
+RECAPTCHA_SECRET_KEY=6LdXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+<Warning>
+  **Security:** This key must remain secret. Do NOT prefix it with `VITE_` or it will be exposed to the browser.
+</Warning>
+
+**Usage:** Server-side validation of reCAPTCHA responses.
+
+## Optional Variables
+
+### EMAIL_TO
+
+**Description:** Comma-separated list of recipient email addresses.
+
+```bash .env
+EMAIL_TO=info@plugin.uy,salvacastro06@gmail.com
+```
+
+**Default:** If not set, emails are sent to:
+- `info@plugin.uy`
+- `salvacastro06@gmail.com`
+
+**Code Reference:**
+
+```javascript api/send-email.js
+to: process.env.EMAIL_TO 
+  ? process.env.EMAIL_TO.split(',').map(e => e.trim()) 
+  : ['info@plugin.uy', 'salvacastro06@gmail.com']
+```
+
+### EMAIL_CC
+
+**Description:** CC recipients for contact form emails (currently commented out).
+
+```bash .env
+EMAIL_CC=additional@email.com
+```
+
+**Code Reference:**
+
+```javascript api/send-email.js
+// If uncommented:
+if (process.env.EMAIL_CC) { 
+  mailOptions.cc = process.env.EMAIL_CC; 
+}
+```
+
+## Setup Guides
+
+### Gmail App Password Setup
+
+Google requires app-specific passwords for third-party applications.
+
+<Steps>
+  <Step title="Enable 2-Factor Authentication">
+    1. Go to [Google Account Security](https://myaccount.google.com/security)
+    2. Enable **2-Step Verification** if not already enabled
+    3. Complete the setup process
+  </Step>
+
+  <Step title="Generate App Password">
+    1. Go to [App Passwords](https://myaccount.google.com/apppasswords)
+    2. Select **App**: "Mail"
+    3. Select **Device**: "Other (Custom name)"
+    4. Enter name: "Plugin Agency Contact Form"
+    5. Click **Generate**
+  </Step>
+
+  <Step title="Copy Password">
+    Google will display a 16-character password:
+    
+    ```
+    abcd efgh ijkl mnop
+    ```
+    
+    Copy this password (without spaces) to your `.env` file:
+    
+    ```bash .env
+    EMAIL_PASS=abcdefghijklmnop
+    ```
+  </Step>
+
+  <Step title="Test Configuration">
+    Run your development server and test the contact form:
+    
+    ```bash
+    npm run dev
+    ```
+    
+    Submit a test message to verify email delivery.
+  </Step>
+</Steps>
+
+<Warning>
+  **Security Note:** App passwords bypass 2FA. Treat them like your main password. If compromised, revoke them immediately in your Google Account settings.
+</Warning>
+
+### reCAPTCHA Key Setup
+
+Protect your contact form from spam with Google reCAPTCHA v2.
+
+<Steps>
+  <Step title="Create reCAPTCHA Site">
+    1. Go to [Google reCAPTCHA Admin](https://www.google.com/recaptcha/admin/create)
+    2. Sign in with your Google account
+    3. Fill out the registration form:
+       - **Label**: "Plugin Agency Contact Form"
+       - **reCAPTCHA type**: reCAPTCHA v2 → "I'm not a robot" Checkbox
+       - **Domains**: 
+         - `localhost` (for development)
+         - `plugin.uy` (your production domain)
+         - `*.vercel.app` (for Vercel preview deployments)
+    4. Accept the Terms of Service
+    5. Click **Submit**
+  </Step>
+
+  <Step title="Copy Keys">
+    Google will display two keys:
+    
+    **Site Key (Public)**
+    ```
+    6LdXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    ```
+    
+    **Secret Key (Private)**
+    ```
+    6LdYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+    ```
+  </Step>
+
+  <Step title="Add to Environment">
+    Add both keys to your `.env` file:
+    
+    ```bash .env
+    VITE_RECAPTCHA_SITE_KEY=6LdXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    RECAPTCHA_SECRET_KEY=6LdYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+    ```
+    
+    <Note>
+      The site key has the `VITE_` prefix (exposed to browser). The secret key does NOT (server-side only).
+    </Note>
+  </Step>
+
+  <Step title="Configure in Vercel">
+    For production deployment:
+    
+    1. Go to Vercel project → **Settings** → **Environment Variables**
+    2. Add both keys
+    3. Set environment: **Production**, **Preview**, and **Development**
+    4. Redeploy the site
+  </Step>
+</Steps>
+
+<Accordion title="How reCAPTCHA Works in the Code">
+  **Client-side (Contact.jsx):**
+  
+  ```jsx
+  import ReCAPTCHA from 'react-google-recaptcha'
+  
+  <ReCAPTCHA
+    sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+    onChange={(token) => setCaptchaToken(token)}
+  />
+  ```
+  
+  **Server-side (api/send-email.js):**
+  
+  ```javascript
+  const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${captchaToken}`
+  
+  const captchaRes = await fetch(verifyUrl, { method: 'POST' })
+  const captchaData = await captchaRes.json()
+  
+  if (!captchaData.success) {
+    return res.status(400).json({ error: 'Captcha inválido' })
+  }
+  ```
+</Accordion>
+
+## Email Configuration Details
+
+The contact form uses **Nodemailer** with custom SMTP settings.
+
+### SMTP Configuration
+
+```javascript api/send-email.js
+const transporter = nodemailer.createTransport({
+  host: 'mail.plugin.uy',
+  port: 465,
+  secure: true, // true for port 465, false for other ports
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+})
+```
+
+<Accordion title="Using Gmail SMTP Instead">
+  If you want to use Gmail's SMTP server instead of a custom domain:
+  
+  ```javascript
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  })
+  ```
+  
+  Or with explicit settings:
+  
+  ```javascript
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // Use TLS
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  })
+  ```
+</Accordion>
+
+### Email Template
+
+```javascript api/send-email.js
+const mailOptions = {
+  from: `"Plugin Contacto" <${process.env.EMAIL_USER}>`,
+  replyTo: email, // User's email from form
+  to: process.env.EMAIL_TO ? process.env.EMAIL_TO.split(',').map(e => e.trim()) : ['info@plugin.uy', 'salvacastro06@gmail.com'],
+  subject: `Nuevo mensaje de contacto de: ${nombre} ${apellido}`,
+  text: `
+    Has recibido un nuevo mensaje desde el formulario de contacto:
+    
+    Nombre: ${nombre} ${apellido}
+    Email: ${email}
+    Teléfono: ${telefono}
+    
+    Mensaje:
+    ${message}
+  `,
+  html: `
+    <h3>Nuevo mensaje de contacto</h3>
+    <p><strong>De:</strong> ${nombre} ${apellido}</p>
+    <p><strong>Email:</strong> ${email}</p>
+    <p><strong>Teléfono:</strong> ${telefono}</p>
+    <p><strong>Mensaje:</strong><br/>${message}</p>
+  `,
+}
+```
+
+## Security Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Never Commit Secrets" icon="lock">
+    Add `.env*` to `.gitignore`. Never commit API keys, passwords, or tokens to version control.
+  </Card>
+  
+  <Card title="Use App Passwords" icon="shield-check">
+    For Gmail, always use app-specific passwords instead of your main account password.
+  </Card>
+  
+  <Card title="Rotate Keys Regularly" icon="rotate">
+    Periodically regenerate reCAPTCHA keys and email passwords, especially after team changes.
+  </Card>
+  
+  <Card title="Limit Domain Access" icon="globe">
+    Configure reCAPTCHA to only work on your specific domains to prevent unauthorized use.
+  </Card>
+</CardGroup>
+
+## Vercel Configuration
+
+For production deployment, add variables in Vercel:
+
+<Steps>
+  <Step title="Open Project Settings">
+    Navigate to your project in Vercel → **Settings** → **Environment Variables**
+  </Step>
+
+  <Step title="Add Each Variable">
+    For each variable:
+    
+    1. Enter **Key**: e.g., `EMAIL_USER`
+    2. Enter **Value**: e.g., `info@plugin.uy`
+    3. Select environments: **Production**, **Preview**, **Development**
+    4. Click **Save**
+  </Step>
+
+  <Step title="Redeploy">
+    After adding all variables:
+    
+    1. Go to **Deployments** tab
+    2. Click **···** on latest deployment
+    3. Select **Redeploy**
+    
+    Or push a new commit to trigger automatic deployment.
+  </Step>
+</Steps>
+
+<Note>
+  Environment variables are encrypted at rest and in transit by Vercel. They are only decrypted during build and runtime.
+</Note>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Email not sending">
+    **Check:**
+    - `EMAIL_USER` and `EMAIL_PASS` are correctly set
+    - App password is valid (not regular Gmail password)
+    - SMTP host and port are correct
+    - No firewall blocking port 465/587
+    
+    **Test locally:**
+    ```bash
+    npm run dev
+    ```
+    
+    Check console for error messages.
+  </Accordion>
+
+  <Accordion title="reCAPTCHA validation failing">
+    **Check:**
+    - Both `VITE_RECAPTCHA_SITE_KEY` and `RECAPTCHA_SECRET_KEY` are set
+    - Keys match the reCAPTCHA version (v2)
+    - Domain is registered in reCAPTCHA admin
+    - `localhost` is added for local development
+    
+    **Test in browser console:**
+    ```javascript
+    console.log(import.meta.env.VITE_RECAPTCHA_SITE_KEY)
+    ```
+    
+    Should output the site key (not undefined).
+  </Accordion>
+
+  <Accordion title="Variables not loading in Vercel">
+    **Check:**
+    - Variables are set for correct environment (Production/Preview)
+    - Site has been redeployed after adding variables
+    - Variable names match exactly (case-sensitive)
+    - No typos in variable values
+    
+    **View build logs:**
+    Go to Vercel deployment → **Building** → View logs to see if variables are detected.
+  </Accordion>
+
+  <Accordion title="VITE_ prefix confusion">
+    **Rule:**
+    - `VITE_` prefix = **exposed to browser** (public)
+    - No prefix = **server-side only** (secret)
+    
+    **Example:**
+    - ✅ `VITE_RECAPTCHA_SITE_KEY` - Safe to expose (public key)
+    - ❌ `VITE_RECAPTCHA_SECRET_KEY` - NEVER expose (private key)
+    - ✅ `RECAPTCHA_SECRET_KEY` - Correct (server-side only)
+  </Accordion>
+</AccordionGroup>
+
+## Example .env File
+
+```bash .env
+# Email Configuration
+EMAIL_USER=info@plugin.uy
+EMAIL_PASS=abcdefghijklmnop
+
+# Optional: Override default recipients
+EMAIL_TO=info@plugin.uy,admin@plugin.uy
+
+# reCAPTCHA Keys
+VITE_RECAPTCHA_SITE_KEY=6LdXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+RECAPTCHA_SECRET_KEY=6LdYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+```
+
+<Warning>
+  **Never commit this file!** Add to `.gitignore`:
+  
+  ```gitignore
+  .env
+  .env.local
+  .env*.local
+  ```
+</Warning>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Deployment Guide" icon="rocket" href="/guides/deployment">
+    Deploy to Vercel with environment variables
+  </Card>
+  <Card title="Contact Component" icon="envelope" href="/components/contact">
+    Learn how the contact form component works
+  </Card>
+</CardGroup>

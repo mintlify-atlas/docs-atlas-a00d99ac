@@ -1,0 +1,402 @@
+---
+title: FAQ Component
+description: Searchable accordion FAQ section with 6 common questions
+---
+
+# FAQ Component
+
+The FAQ component displays frequently asked questions in an interactive accordion format with search functionality and custom SVG illustration.
+
+## Overview
+
+This section:
+- Displays 6 frequently asked questions
+- Features accordion-style expand/collapse interaction
+- Includes search functionality to filter questions
+- Shows custom SVG illustration
+- Handles "no results" state
+- Single-question open at a time (optional multi-open)
+
+## Features
+
+- **Search Functionality**: Real-time filtering of questions and answers
+- **Accordion Interaction**: Click to expand/collapse answers
+- **Clear Search**: X button to clear search query
+- **SVG Illustration**: Custom decorative graphic
+- **No Results Handling**: Friendly message when search yields no results
+- **State Management**: Tracks active question and search query
+- **Inline SVG**: Custom question mark illustration
+
+## Props
+
+This component accepts no props.
+
+## Usage
+
+```jsx
+import FAQ from './components/FAQ';
+
+function App() {
+  return (
+    <>
+      {/* Other sections */}
+      <FAQ />
+      {/* More sections */}
+    </>
+  );
+}
+```
+
+## FAQ Data Structure
+
+The component includes 6 FAQs:
+
+```javascript
+const faqs = [
+    {
+        question: "¿Qué hace una agencia digital y en qué se diferencia de una agencia de marketing?",
+        answer: "Una agencia digital combina estrategia, diseño y tecnología para crear activos digitales (webs, apps, automatizaciones), mientras que muchas agencias de marketing se enfocan solo en campañas y redes. Nosotros construimos sistemas completos."
+    },
+    {
+        question: "¿Qué incluye un proyecto de branding y comunicación?",
+        answer: "Incluye el posicionamiento, mensaje, lineamientos visuales, arquitectura de comunicación y un plan base de contenidos para asegurar que tu marca sea coherente en todos los canales."
+    },
+    {
+        question: "¿Cuánto demora tener una web lista y optimizada para convertir?",
+        answer: "Depende del alcance, pero un sitio web estructurado o landing page suele tomar entre 4 a 8 semanas, incluyendo diseño, desarrollo y carga de contenidos."
+    },
+    {
+        question: "¿Qué automatizaciones se pueden implementar en un negocio digital?",
+        answer: "Desde respuestas automáticas y gestión de formularios, hasta integración de CRMs, facturación y flujos de nutrición de leads."
+    },
+    {
+        question: "¿Trabajan con proyectos en etapa temprana o solo con empresas?",
+        answer: "Trabajamos con ambos. Tenemos packs iniciales para startups que necesitan validar y ordenar, y soluciones avanzadas para empresas que buscan escalar."
+    },
+    {
+        question: "¿Cómo se mide el impacto del trabajo?",
+        answer: "Definimos KPIs claros al inicio: tráfico, conversiones, leads cualificados y ahorro de tiempo operativo son métricas comunes que seguimos."
+    }
+];
+```
+
+## Code Implementation
+
+```jsx title="FAQ.jsx" {31-36}
+import React, { useState } from 'react';
+
+const FAQ = () => {
+    const faqs = [
+        // ... FAQ data as shown above
+    ];
+
+    const [activeIndex, setActiveIndex] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const toggleFAQ = (index) => {
+        setActiveIndex(activeIndex === index ? null : index);
+    };
+
+    const filteredFaqs = faqs.filter(faq =>
+        faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    return (
+        <section id="faq" className="faq-section section-divider-dot">
+            <div className="container">
+                <h2 className="section-title">Preguntas Frecuentes</h2>
+                <div className="faq-content-wrapper">
+                    <div className="faq-list">
+                        <div className="faq-search-container">
+                            <input
+                                type="text"
+                                placeholder="Buscar pregunta..."
+                                className="faq-search-input"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            {searchQuery && (
+                                <button
+                                    className="search-clear"
+                                    onClick={() => setSearchQuery('')}
+                                    aria-label="Limpiar búsqueda"
+                                >
+                                    <svg>{/* X icon */}</svg>
+                                </button>
+                            )}
+                            <span className="search-icon">
+                                <svg>{/* Search icon */}</svg>
+                            </span>
+                        </div>
+                        <div className="faq-items-container">
+                            {filteredFaqs.length > 0 ? (
+                                filteredFaqs.map((faq, index) => (
+                                    <div key={index} className={`faq-item-ref ${activeIndex === index ? 'active' : ''}`} onClick={() => toggleFAQ(index)}>
+                                        <div className="faq-question-ref">
+                                            <h3>{faq.question}</h3>
+                                            <span className={`faq-icon-ref ${activeIndex === index ? 'active' : ''}`}>
+                                                <svg>{/* Chevron down icon */}</svg>
+                                            </span>
+                                        </div>
+                                        <div className="faq-answer-ref">
+                                            <p>{faq.answer}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="faq-no-results">No se encontraron preguntas que coincidan con tu búsqueda.</p>
+                            )}
+                        </div>
+                    </div>
+                    <div className="faq-image">
+                        {/* Custom SVG illustration */}
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default FAQ;
+```
+
+## The 6 FAQ Questions
+
+### 1. What does a digital agency do and how does it differ from a marketing agency?
+**Answer**: A digital agency combines strategy, design, and technology to create digital assets (websites, apps, automations), while many marketing agencies focus only on campaigns and social media. We build complete systems.
+
+### 2. What's included in a branding and communication project?
+**Answer**: Includes positioning, messaging, visual guidelines, communication architecture, and a base content plan to ensure your brand is coherent across all channels.
+
+### 3. How long does it take to have a website ready and optimized for conversion?
+**Answer**: Depends on scope, but a structured website or landing page typically takes 4 to 8 weeks, including design, development, and content loading.
+
+### 4. What automations can be implemented in a digital business?
+**Answer**: From automatic responses and form management, to CRM integration, invoicing, and lead nurturing flows.
+
+### 5. Do you work with early-stage projects or only with companies?
+**Answer**: We work with both. We have initial packs for startups that need to validate and organize, and advanced solutions for companies looking to scale.
+
+### 6. How is the impact of the work measured?
+**Answer**: We define clear KPIs at the start: traffic, conversions, qualified leads, and operational time savings are common metrics we track.
+
+## Search Functionality
+
+### Real-Time Filtering
+
+Search filters both questions and answers:
+
+```javascript
+const filteredFaqs = faqs.filter(faq =>
+    faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
+);
+```
+
+### Clear Button
+
+Conditionally shown when search has content:
+
+```jsx
+{searchQuery && (
+    <button
+        className="search-clear"
+        onClick={() => setSearchQuery('')}
+        aria-label="Limpiar búsqueda"
+    >
+        {/* X icon */}
+    </button>
+)}
+```
+
+### No Results State
+
+Friendly message when no matches found:
+
+```jsx
+{filteredFaqs.length > 0 ? (
+    // Show filtered FAQs
+) : (
+    <p className="faq-no-results">
+        No se encontraron preguntas que coincidan con tu búsqueda.
+    </p>
+)}
+```
+
+<Note>
+The search is case-insensitive and searches both questions and answers for maximum discoverability.
+</Note>
+
+## Accordion Interaction
+
+### Toggle Function
+
+Toggles between open and closed states:
+
+```javascript
+const toggleFAQ = (index) => {
+    setActiveIndex(activeIndex === index ? null : index);
+};
+```
+
+**Logic**:
+- If clicked FAQ is already open (`activeIndex === index`), close it (`null`)
+- Otherwise, open the clicked FAQ (set `activeIndex` to `index`)
+
+### Active State Styling
+
+Both the FAQ item and icon receive active classes:
+
+```jsx
+className={`faq-item-ref ${activeIndex === index ? 'active' : ''}`}
+className={`faq-icon-ref ${activeIndex === index ? 'active' : ''}`}
+```
+
+## SVG Illustration
+
+Custom SVG graphic featuring:
+- Question mark symbol with gradient
+- Decorative circles
+- Chat bubble illustrations
+- Sparkle elements
+
+### SVG Structure
+
+```jsx
+<svg width="100%" height="100%" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+    {/* Background decorative circles */}
+    <circle cx="80" cy="80" r="40" fill="#667eea" opacity="0.1" />
+    <circle cx="320" cy="100" r="30" fill="#764ba2" opacity="0.1" />
+    <circle cx="350" cy="320" r="50" fill="#667eea" opacity="0.08" />
+
+    {/* Gradient definition */}
+    <defs>
+        <linearGradient id="questionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#667eea" />
+            <stop offset="100%" stopColor="#764ba2" />
+        </linearGradient>
+    </defs>
+
+    {/* Main question mark */}
+    <path d="M 200 80 C 240 80 270 110 270 150 C 270 180 250 200 230 210 L 230 240"
+        stroke="url(#questionGradient)" strokeWidth="24" strokeLinecap="round" fill="none" />
+    <circle cx="230" cy="280" r="15" fill="url(#questionGradient)" />
+
+    {/* Chat bubbles and sparkles */}
+</svg>
+```
+
+<Info>
+The SVG is fully responsive using `preserveAspectRatio="xMidYMid meet"` and percentage-based dimensions.
+</Info>
+
+## Styling Classes
+
+- `.faq-section` - Main section container
+- `.section-divider-dot` - Dotted divider style
+- `.faq-content-wrapper` - Two-column layout wrapper
+- `.faq-list` - FAQ list column
+- `.faq-search-container` - Search input wrapper
+- `.faq-search-input` - Search input field
+- `.search-clear` - Clear search button
+- `.search-icon` - Search icon
+- `.faq-items-container` - FAQ items wrapper
+- `.faq-item-ref` - Individual FAQ item
+- `.faq-item-ref.active` - Expanded FAQ item
+- `.faq-question-ref` - Question header
+- `.faq-icon-ref` - Chevron icon
+- `.faq-icon-ref.active` - Rotated chevron (when open)
+- `.faq-answer-ref` - Answer content (collapsed/expanded)
+- `.faq-no-results` - No results message
+- `.faq-image` - Illustration column
+
+## Layout Structure
+
+```
+┌──────────────────────────────────────────┐
+│              Preguntas Frecuentes              │
+├───────────────────────┬───────────────────┤
+│ [Search Input...]  │  [SVG Illustration] │
+│                      │                    │
+│ ▶ Question 1...     │                    │
+│ ▼ Question 2...     │                    │
+│   Answer text...     │                    │
+│ ▶ Question 3...     │                    │
+│ ▶ Question 4...     │                    │
+│ ▶ Question 5...     │                    │
+│ ▶ Question 6...     │                    │
+└───────────────────────┴───────────────────┘
+```
+
+## State Management
+
+Two state variables:
+
+```javascript
+const [activeIndex, setActiveIndex] = useState(null);  // Currently open FAQ (or null)
+const [searchQuery, setSearchQuery] = useState('');    // Search input value
+```
+
+## Responsive Behavior
+
+- **Desktop**: Two-column layout (FAQs | Illustration)
+- **Tablet**: May stack illustration below
+- **Mobile**: Single column, illustration hidden or reduced
+
+## Accessibility Features
+
+- `aria-label` on clear button: "Limpiar búsqueda"
+- Semantic HTML structure
+- Keyboard-accessible buttons and inputs
+
+<Warning>
+Consider adding:
+- ARIA expanded/collapsed states on accordion items
+- Keyboard navigation (Arrow keys to move between questions)
+- Focus management when opening/closing
+</Warning>
+
+## SVG Icons Used
+
+### Search Icon (Magnifying Glass)
+
+```jsx
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8"></circle>
+    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+</svg>
+```
+
+### Clear Icon (X)
+
+```jsx
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+</svg>
+```
+
+### Chevron Down
+
+```jsx
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="6 9 12 15 18 9"></polyline>
+</svg>
+```
+
+## Dependencies
+
+- React hooks: `useState`
+- No external libraries required
+- Inline SVG (no image files)
+
+## Performance Considerations
+
+- Filtering happens on every keystroke (consider debouncing for large FAQ lists)
+- SVG is inline (reduces HTTP requests but increases HTML size)
+- Single active item prevents rendering all answers simultaneously
+
+<Info>
+For very large FAQ lists (50+), consider implementing debounced search or virtual scrolling.
+</Info>

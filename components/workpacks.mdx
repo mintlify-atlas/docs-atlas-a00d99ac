@@ -1,0 +1,323 @@
+---
+title: WorkPacks Component
+description: Work package offerings displayed in a 3-tier pricing card layout
+---
+
+# WorkPacks Component
+
+The WorkPacks component displays Plugin Agency's three-tiered service packages (Base, Intermedio, Avanzado) in a card-based layout with highlighted recommended option.
+
+## Overview
+
+This section:
+- Presents 3 work packages in a horizontal card layout
+- Highlights the recommended "Pack Intermedio"
+- Shows detailed inclusions for each package
+- Provides CTAs for each package
+- Includes disclaimer about customization
+
+## Features
+
+- **Three Tiers**: Base, Intermedio (highlighted), Avanzado
+- **Recommendation Badge**: Visual indicator on middle tier
+- **Detailed Inclusions**: Bullet-point lists for each package
+- **Result Statements**: Clear outcome description per package
+- **CTAs**: Individual contact buttons for each pack
+- **Responsive Layout**: Adapts to different screen sizes
+
+## Props
+
+This component accepts no props.
+
+## Usage
+
+```jsx
+import WorkPacks from './components/WorkPacks';
+
+function App() {
+  return (
+    <>
+      {/* Other sections */}
+      <WorkPacks />
+      {/* More sections */}
+    </>
+  );
+}
+```
+
+## Packs Data Structure
+
+The component uses a `PACKS` array with 3 package definitions:
+
+```javascript
+const PACKS = [
+    {
+        title: "Pack Base — Sistema Inicial",
+        subtitle: "Para proyectos que necesitan ordenarse y arrancar bien.",
+        description: "Ideal si estás construyendo identidad, mensaje y una presencia digital simple pero coherente.",
+        includes: [
+            "Identidad, mensaje y posicionamiento inicial",
+            "Estrategia base de comunicación y contenidos",
+            "Lineamientos para redes",
+            "Landing o sitio simple y estructurado",
+            "Acompañamiento durante la implementación"
+        ],
+        result: "Una base clara y comunicable para empezar a crecer.",
+        highlight: false
+    },
+    {
+        title: "Pack Intermedio — Sistema Integrado",
+        subtitle: "Para proyectos en crecimiento que necesitan coherencia y visibilidad.",
+        description: "Ideal si ya están activos, pero web, redes y comunicación no funcionan como un sistema.",
+        includes: [
+            "Estrategia de marca, comunicación y contenidos",
+            "Planificación y acompañamiento de redes",
+            "Desarrollo/mejora de sitio o plataforma",
+            "Automatización de procesos clave",
+            "Acompañamiento continuo"
+        ],
+        result: "Un sistema alineado donde comunicación, contenidos y tecnología trabajan juntos.",
+        highlight: true  // RECOMMENDED
+    },
+    {
+        title: "Pack Avanzado — Ecosistema Conectado",
+        subtitle: "Para proyectos que buscan consolidarse y escalar.",
+        description: "Ideal si necesitan estructura, posicionamiento y visibilidad estratégica dentro del ecosistema.",
+        includes: [
+            "Dirección estratégica integral",
+            "Estrategia avanzada de contenidos y posicionamiento",
+            "Desarrollo web / soluciones a medida",
+            "Automatización avanzada",
+            "PR, alianzas y acciones de visibilidad",
+            "Diseño y ejecución de experiencias específicas"
+        ],
+        result: "Un proyecto consolidado, visible y conectado.",
+        highlight: false
+    }
+];
+```
+
+## Code Implementation
+
+```jsx title="WorkPacks.jsx"
+const PACKS = [
+    {
+        title: "Pack Base — Sistema Inicial",
+        subtitle: "Para proyectos que necesitan ordenarse y arrancar bien.",
+        description: "Ideal si estás construyendo identidad, mensaje y una presencia digital simple pero coherente.",
+        includes: [
+            "Identidad, mensaje y posicionamiento inicial",
+            "Estrategia base de comunicación y contenidos",
+            "Lineamientos para redes",
+            "Landing o sitio simple y estructurado",
+            "Acompañamiento durante la implementación"
+        ],
+        result: "Una base clara y comunicable para empezar a crecer.",
+        highlight: false
+    },
+    {
+        title: "Pack Intermedio — Sistema Integrado",
+        subtitle: "Para proyectos en crecimiento que necesitan coherencia y visibilidad.",
+        description: "Ideal si ya están activos, pero web, redes y comunicación no funcionan como un sistema.",
+        includes: [
+            "Estrategia de marca, comunicación y contenidos",
+            "Planificación y acompañamiento de redes",
+            "Desarrollo/mejora de sitio o plataforma",
+            "Automatización de procesos clave",
+            "Acompañamiento continuo"
+        ],
+        result: "Un sistema alineado donde comunicación, contenidos y tecnología trabajan juntos.",
+        highlight: true
+    },
+    {
+        title: "Pack Avanzado — Ecosistema Conectado",
+        subtitle: "Para proyectos que buscan consolidarse y escalar.",
+        description: "Ideal si necesitan estructura, posicionamiento y visibilidad estratégica dentro del ecosistema.",
+        includes: [
+            "Dirección estratégica integral",
+            "Estrategia avanzada de contenidos y posicionamiento",
+            "Desarrollo web / soluciones a medida",
+            "Automatización avanzada",
+            "PR, alianzas y acciones de visibilidad",
+            "Diseño y ejecución de experiencias específicas"
+        ],
+        result: "Un proyecto consolidado, visible y conectado.",
+        highlight: false
+    }
+];
+
+const WorkPacks = () => {
+    return (
+        <section id="workpacks" className="workpacks-section section-divider">
+            <div className="container">
+                <h2 className="section-title">Packs de <span>trabajo</span></h2>
+                <div className="packs-grid">
+                    {PACKS.map((pack, i) => (
+                        <div key={i} className={`pack-card ${pack.highlight ? 'highlight' : ''}`}>
+                            {pack.highlight && (
+                                <div className="pack-badge">⚡ Recomendado</div>
+                            )}
+                            <h3 className="pack-title">{pack.title}</h3>
+                            <p className="pack-subtitle">{pack.subtitle}</p>
+                            <p className="pack-description">{pack.description}</p>
+                            <ul className="pack-includes">
+                                {pack.includes.map((item, idx) => (
+                                    <li key={idx}>
+                                        <span className="check-icon">✓</span>
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+                            <div className="pack-result">
+                                <strong>Resultado:</strong> {pack.result}
+                            </div>
+                            <a href="#contact" className="btn btn-primary pack-btn">Consultar Pack</a>
+                        </div>
+                    ))}
+                </div>
+                <p className="packs-disclaimer">Cada pack es una estructura de acompañamiento: el alcance final se define por etapa, objetivos y necesidades.</p>
+            </div>
+        </section>
+    );
+};
+
+export default WorkPacks;
+```
+
+## Package Tiers
+
+### Pack Base — Sistema Inicial
+**Target**: Projects that need organization and a good start
+
+**Includes**:
+- Identity, message, and initial positioning
+- Base communication and content strategy
+- Social media guidelines
+- Simple structured landing or site
+- Implementation support
+
+**Result**: A clear, communicable base to start growing.
+
+### Pack Intermedio — Sistema Integrado (Recommended)
+**Target**: Growing projects needing coherence and visibility
+
+**Includes**:
+- Brand, communication, and content strategy
+- Social media planning and support
+- Site/platform development or improvement
+- Key process automation
+- Continuous support
+
+**Result**: An aligned system where communication, content, and technology work together.
+
+### Pack Avanzado — Ecosistema Conectado
+**Target**: Projects seeking consolidation and scaling
+
+**Includes**:
+- Comprehensive strategic direction
+- Advanced content and positioning strategy
+- Web development / custom solutions
+- Advanced automation
+- PR, partnerships, and visibility actions
+- Design and execution of specific experiences
+
+**Result**: A consolidated, visible, and connected project.
+
+<Note>
+The "Pack Intermedio" is highlighted as recommended with a lightning bolt badge (⚡ Recomendado).
+</Note>
+
+## Styling Classes
+
+- `.workpacks-section` - Main section container
+- `.section-divider` - Visual separator
+- `.section-title` - Main heading with highlighted span
+- `.packs-grid` - Grid container for pack cards
+- `.pack-card` - Individual pack card
+- `.pack-card.highlight` - Highlighted recommended pack
+- `.pack-badge` - Recommendation badge
+- `.pack-title` - Package title
+- `.pack-subtitle` - Package subtitle
+- `.pack-description` - Package description
+- `.pack-includes` - Bullet list of inclusions
+- `.check-icon` - Checkmark for list items
+- `.pack-result` - Result statement
+- `.pack-btn` - CTA button
+- `.packs-disclaimer` - Bottom disclaimer text
+
+## Layout Structure
+
+1. **Header**
+   - Title: "Packs de trabajo" with highlighted "trabajo"
+
+2. **Packs Grid**
+   - 3 package cards side by side
+   - Middle card highlighted
+
+3. **Card Content** (each):
+   - Badge (if highlighted)
+   - Title
+   - Subtitle
+   - Description
+   - Inclusion list with checkmarks
+   - Result statement
+   - CTA button
+
+4. **Disclaimer**
+   - Centered text below grid
+
+## Responsive Behavior
+
+- **Desktop**: 3-column grid (side by side)
+- **Tablet**: May stack to 2 columns or single
+- **Mobile**: Single column stack
+
+## Visual Indicators
+
+### Recommendation Badge
+
+Only shown on highlighted pack:
+
+```jsx
+{pack.highlight && (
+    <div className="pack-badge">⚡ Recomendado</div>
+)}
+```
+
+### Checkmarks
+
+Each inclusion item has a checkmark:
+
+```jsx
+<span className="check-icon">✓</span>
+```
+
+## Conditional Styling
+
+Highlighted card receives additional class:
+
+```jsx
+className={`pack-card ${pack.highlight ? 'highlight' : ''}`}
+```
+
+## Disclaimer Text
+
+> "Cada pack es una estructura de acompañamiento: el alcance final se define por etapa, objetivos y necesidades."
+
+This clarifies that packages are flexible frameworks, not rigid offerings.
+
+<Warning>
+While packs provide structure, emphasize customization in sales conversations. The disclaimer helps set proper expectations.
+</Warning>
+
+## Dependencies
+
+- React (no external packages)
+- Pure functional component
+- No state management
+
+## Integration Points
+
+- **Contact Section**: All CTA buttons link to #contact
+- **Services**: Packs bundle services from Services component
+- **Method**: Packs implement the 5-layer system from Method component

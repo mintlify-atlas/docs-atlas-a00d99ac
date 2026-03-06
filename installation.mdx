@@ -1,0 +1,368 @@
+---
+title: Installation
+description: Detailed installation guide for Plugin Agency with prerequisites, configuration, and troubleshooting
+---
+
+# Installation Guide
+
+This comprehensive guide covers everything you need to know about installing and configuring Plugin Agency, including prerequisites, detailed setup instructions, and troubleshooting common issues.
+
+## Prerequisites
+
+Before installing Plugin Agency, ensure your development environment meets these requirements:
+
+### Node.js and npm
+
+<Note>
+  **Recommended**: Node.js 18.x or higher with npm 9.x or higher
+</Note>
+
+Check your Node.js and npm versions:
+
+```bash
+node --version
+npm --version
+```
+
+If you need to install or update Node.js, download it from [nodejs.org](https://nodejs.org/) or use a version manager like [nvm](https://github.com/nvm-sh/nvm):
+
+```bash
+# Using nvm
+nvm install 18
+nvm use 18
+```
+
+### Git
+
+You'll need Git to clone the repository:
+
+```bash
+git --version
+```
+
+### Email Account (Gmail)
+
+For the contact form to work, you'll need:
+- A Gmail account
+- An App Password generated for your account
+
+### Google reCAPTCHA Keys
+
+Register your site at the [Google reCAPTCHA Admin Console](https://www.google.com/recaptcha/admin) to obtain:
+- reCAPTCHA Site Key (client-side)
+- reCAPTCHA Secret Key (server-side)
+
+## Installation Steps
+
+### 1. Clone the Repository
+
+Clone the Plugin Agency repository from GitHub:
+
+```bash
+git clone https://github.com/salvador-castro/plugin-agency.git
+cd plugin-agency
+```
+
+### 2. Install Dependencies
+
+Install all required packages using your preferred package manager:
+
+<CodeGroup>
+  ```bash npm
+  npm install
+  ```
+  
+  ```bash yarn
+  yarn install
+  ```
+  
+  ```bash pnpm
+  pnpm install
+  ```
+</CodeGroup>
+
+This installs the following key dependencies:
+
+#### Production Dependencies
+- **react** (^19.2.0): Core React library
+- **react-dom** (^19.2.0): React DOM rendering
+- **nodemailer** (^7.0.13): Email sending functionality
+- **react-google-recaptcha** (^3.1.0): reCAPTCHA integration
+- **lucide-react** (^0.575.0): Icon components
+- **@vercel/analytics** (^1.6.1): Analytics tracking
+
+#### Development Dependencies
+- **vite** (^7.2.4): Build tool and dev server
+- **@vitejs/plugin-react** (^5.1.1): Vite React plugin
+- **eslint** (^9.39.1): Code linting
+- **sharp** (^0.34.5): Image optimization
+
+## Environment Configuration
+
+### Create Environment File
+
+Create a `.env` file in the root directory:
+
+```bash
+touch .env
+```
+
+### Environment Variables Explained
+
+Add the following variables to your `.env` file:
+
+```env
+EMAIL_USER=your_gmail_address
+EMAIL_PASS=your_app_password
+VITE_RECAPTCHA_SITE_KEY=your_recaptcha_site_key
+RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key
+```
+
+#### EMAIL_USER
+
+Your Gmail email address that will be used to send emails from the contact form.
+
+**Example**: `EMAIL_USER=agency@gmail.com`
+
+#### EMAIL_PASS
+
+<Warning>
+  This is NOT your regular Gmail password. You must generate an App Password.
+</Warning>
+
+Your Gmail App Password. To generate one:
+
+1. Go to your [Google Account](https://myaccount.google.com/)
+2. Navigate to **Security** > **2-Step Verification**
+3. Scroll down to **App passwords**
+4. Generate a new app password for "Mail"
+5. Copy the 16-character password
+
+**Example**: `EMAIL_PASS=abcd efgh ijkl mnop` (without spaces)
+
+[Learn more about App Passwords](https://support.google.com/accounts/answer/185833)
+
+#### VITE_RECAPTCHA_SITE_KEY
+
+Your reCAPTCHA v2 Site Key (client-side key). This key is prefixed with `VITE_` to make it available in the frontend.
+
+**Example**: `VITE_RECAPTCHA_SITE_KEY=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI`
+
+#### RECAPTCHA_SECRET_KEY
+
+Your reCAPTCHA v2 Secret Key (server-side key). This key is used to verify reCAPTCHA responses on the backend.
+
+**Example**: `RECAPTCHA_SECRET_KEY=6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe`
+
+<Note>
+  To obtain reCAPTCHA keys:
+  1. Visit [Google reCAPTCHA Admin](https://www.google.com/recaptcha/admin)
+  2. Register a new site with reCAPTCHA v2 ("I'm not a robot" Checkbox)
+  3. Add your domain(s) (use `localhost` for development)
+  4. Copy both keys to your `.env` file
+</Note>
+
+## Development Server
+
+Start the Vite development server:
+
+<CodeGroup>
+  ```bash npm
+  npm run dev
+  ```
+  
+  ```bash yarn
+  yarn dev
+  ```
+  
+  ```bash pnpm
+  pnpm dev
+  ```
+</CodeGroup>
+
+The development server will start on `http://localhost:5173` with:
+- Hot Module Replacement (HMR) for instant updates
+- Fast refresh for React components
+- Network access enabled for testing on other devices
+
+## Production Build
+
+### Build the Application
+
+Create an optimized production build:
+
+<CodeGroup>
+  ```bash npm
+  npm run build
+  ```
+  
+  ```bash yarn
+  yarn build
+  ```
+  
+  ```bash pnpm
+  pnpm build
+  ```
+</CodeGroup>
+
+This command:
+1. Runs ESLint to check for code issues
+2. Bundles and minifies JavaScript and CSS
+3. Optimizes images and assets
+4. Generates a production-ready build in the `dist/` directory
+
+### Preview Production Build
+
+Test the production build locally:
+
+<CodeGroup>
+  ```bash npm
+  npm run preview
+  ```
+  
+  ```bash yarn
+  yarn preview
+  ```
+  
+  ```bash pnpm
+  pnpm preview
+  ```
+</CodeGroup>
+
+This serves the production build from the `dist/` directory, allowing you to test it before deployment.
+
+## Code Quality
+
+### Run Linting
+
+Check your code for issues with ESLint:
+
+<CodeGroup>
+  ```bash npm
+  npm run lint
+  ```
+  
+  ```bash yarn
+  yarn lint
+  ```
+  
+  ```bash pnpm
+  pnpm lint
+  ```
+</CodeGroup>
+
+The project uses ESLint 9.39.1 with plugins for:
+- React hooks rules
+- React refresh compatibility
+- Modern JavaScript standards
+
+## Troubleshooting
+
+<Accordion title="Port 5173 is already in use">
+  If port 5173 is already in use, Vite will automatically try the next available port (5174, 5175, etc.).
+  
+  To use a specific port, modify the `vite.config.js` file:
+  
+  ```javascript
+  export default defineConfig({
+    plugins: [react()],
+    server: {
+      host: true,
+      port: 3000, // Your desired port
+      allowedHosts: true
+    }
+  })
+  ```
+</Accordion>
+
+<Accordion title="Email not sending from contact form">
+  Common causes and solutions:
+  
+  1. **Invalid App Password**: Make sure you're using an App Password, not your regular Gmail password
+  2. **2-Step Verification not enabled**: App Passwords require 2-Step Verification to be enabled on your Google account
+  3. **Environment variables not loaded**: Ensure your `.env` file is in the root directory and variables are correctly named
+  4. **Gmail security block**: Check your Gmail security settings and ensure "Less secure app access" is not blocking the connection
+  
+  Test your email configuration by checking the browser console and network tab for error messages.
+</Accordion>
+
+<Accordion title="reCAPTCHA not displaying">
+  If the reCAPTCHA widget doesn't appear:
+  
+  1. **Check environment variable**: Ensure `VITE_RECAPTCHA_SITE_KEY` is set correctly (note the `VITE_` prefix)
+  2. **Domain restrictions**: If you set domain restrictions in reCAPTCHA admin, make sure `localhost` is included for development
+  3. **Browser console errors**: Check for CORS or network errors in the browser console
+  4. **Key type mismatch**: Ensure you're using reCAPTCHA v2 keys, not v3
+</Accordion>
+
+<Accordion title="Build fails with ESLint errors">
+  If the build process fails due to linting errors:
+  
+  1. Run `npm run lint` to see all linting issues
+  2. Fix the reported issues in your code
+  3. Alternatively, temporarily disable ESLint during build by modifying the build script (not recommended for production)
+  
+  Most common issues:
+  - Unused variables or imports
+  - Missing prop types
+  - React hooks dependency warnings
+</Accordion>
+
+<Accordion title="Module not found errors">
+  If you see "Cannot find module" errors:
+  
+  1. Delete `node_modules` and lock file:
+     ```bash
+     rm -rf node_modules package-lock.json
+     ```
+  
+  2. Clear npm cache:
+     ```bash
+     npm cache clean --force
+     ```
+  
+  3. Reinstall dependencies:
+     ```bash
+     npm install
+     ```
+  
+  4. If using yarn or pnpm, delete `yarn.lock` or `pnpm-lock.yaml` respectively
+</Accordion>
+
+<Accordion title="Video background not loading">
+  If the hero video background doesn't display:
+  
+  1. **Check file path**: Ensure video files exist in `public/assets/hero/`
+  2. **Video format**: Make sure the video format is supported by browsers (MP4 with H.264 codec is recommended)
+  3. **File size**: Large video files may take time to load; consider optimizing or compressing
+  4. **Browser autoplay policy**: Some browsers block autoplay; the video should be muted to autoplay
+</Accordion>
+
+<Accordion title="Responsive design issues">
+  If the layout doesn't respond correctly on mobile:
+  
+  1. **Clear browser cache**: Hard refresh your browser (Ctrl+Shift+R or Cmd+Shift+R)
+  2. **Check viewport meta tag**: Ensure `index.html` has the proper viewport meta tag
+  3. **CSS variables**: Verify that CSS variables are supported by your browser
+  4. **Browser dev tools**: Use responsive design mode in browser dev tools to debug breakpoints
+</Accordion>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Configuration" icon="sliders" href="/guides/configuration">
+    Learn how to customize Plugin Agency for your needs.
+  </Card>
+  
+  <Card title="Deployment" icon="rocket" href="/guides/deployment">
+    Deploy your Plugin Agency site to production.
+  </Card>
+  
+  <Card title="Components" icon="puzzle" href="/components/navbar">
+    Explore the component library and customization options.
+  </Card>
+  
+  <Card title="API Reference" icon="code" href="/api/send-email">
+    View the complete API documentation.
+  </Card>
+</CardGroup>
