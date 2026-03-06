@@ -41,6 +41,7 @@
               "components/method",
               "components/services",
               "components/workpacks",
+              "components/trustedby",
               "components/about",
               "components/process",
               "components/faq",

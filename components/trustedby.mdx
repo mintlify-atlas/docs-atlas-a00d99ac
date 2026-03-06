@@ -1,0 +1,239 @@
+---
+title: TrustedBy Component
+description: Client showcase section with infinite scroll logo animations displaying trusted partners and clients
+---
+
+# TrustedBy Component
+
+The TrustedBy component displays a showcase of clients and partners with infinite scrolling logo animations. This component is currently commented out in the main App but is fully functional.
+
+## Overview
+
+This section:
+- Displays 18 client/partner logos
+- Implements infinite horizontal scrolling animations
+- Uses two rows with opposite scroll directions
+- Features fade-in/fade-out edge effects
+- Optimized with lazy loading
+
+## Features
+
+- **Infinite Scroll**: Two rows of logos with continuous animation
+- **Bidirectional Animation**: Row 1 scrolls left-to-right, Row 2 scrolls right-to-left
+- **Edge Fading**: Smooth fade effects on left and right edges
+- **Lazy Loading**: Images load only when needed
+- **Performance Optimized**: Logo duplication for seamless loops
+
+## Props
+
+This component accepts no props.
+
+## Client Data
+
+The component includes 18 notable clients and partners:
+
+**Web3 & Blockchain**:
+- Binance
+- Polkadot
+- Cardano
+- Bitget
+- Meta Pool
+- Scroll Protocol
+- Criptala
+- Nexchange
+
+**Events & Organizations**:
+- Devconnect
+- Blockchain Rio
+- Blockchain Summit
+
+**Venues & Hospitality**:
+- Radisson
+- Casa Pueblo
+- Zag Coliving
+- Vermut Rooster
+
+**Tickets & Real Estate**:
+- 7AM Tickets
+- Forum Propiedades
+- We Bike
+
+## Usage
+
+```jsx
+import TrustedBy from './components/TrustedBy';
+
+function App() {
+  return (
+    <div>
+      <TrustedBy />
+    </div>
+  );
+}
+```
+
+<Note>
+This component is currently commented out in the main App.jsx but can be enabled by uncommenting the import and component usage.
+</Note>
+
+## Code Implementation
+
+```jsx TrustedBy.jsx
+const clients = [
+    { name: "Binance", logo: "/assets/empresas/binance.webp" },
+    { name: "Polkadot", logo: "/assets/empresas/polkadot.webp" },
+    { name: "Devconnect", logo: "/assets/empresas/devconnect.webp" },
+    { name: "Bitget", logo: "/assets/empresas/bitget.webp" },
+    { name: "Cardano", logo: "/assets/empresas/cardano.webp" },
+    { name: "Blockchain Rio", logo: "/assets/empresas/blockchain-rio.webp" },
+    { name: "Radisson", logo: "/assets/empresas/radisson.webp" },
+    { name: "Meta Pool", logo: "/assets/empresas/meta-pool.webp" },
+    { name: "7AM Tickets", logo: "/assets/empresas/7am-tickets.webp" },
+    { name: "Forum Propiedades", logo: "/assets/empresas/forum-propiedades.webp" },
+    { name: "Blockchain Summit", logo: "/assets/empresas/blockchain-summit.webp" },
+    { name: "Scroll Protocol", logo: "/assets/empresas/scroll-protocol.webp" },
+    { name: "Criptala", logo: "/assets/empresas/criptala.webp" },
+    { name: "Zag Coliving", logo: "/assets/empresas/zag-coliving.webp" },
+    { name: "Vermut Rooster", logo: "/assets/empresas/vermut-rooster.webp" },
+    { name: "Nexchange", logo: "/assets/empresas/nexchange.webp" },
+    { name: "Casa Pueblo", logo: "/assets/empresas/casa-pueblo.webp" },
+    { name: "We Bike", logo: "/assets/empresas/we-bike.webp" },
+];
+
+const LogoItem = ({ client }) => (
+    <div className="tb-logo-item">
+        <img
+            src={client.logo}
+            alt={client.name}
+            className="tb-logo-img"
+            loading="lazy"
+            width="140"
+            height="60"
+        />
+    </div>
+);
+
+const TrustedBy = () => {
+    const row1 = clients.slice(0, 9);
+    const row2 = clients.slice(9);
+
+    return (
+        <section className="trusted-by-section">
+            <div className="container">
+                <p className="tb-eyebrow">CLIENTES &amp; PARTNERS</p>
+                <h2 className="section-title">
+                    Empresas que <span>confían</span> en nosotros
+                </h2>
+                <p className="tb-subtitle">
+                    Desde proyectos Web3 globales hasta marcas locales y venues de prestigio.
+                </p>
+            </div>
+
+            {/* Row 1 — scroll left → right */}
+            <div className="tb-track-wrapper">
+                <div className="tb-fade-left" />
+                <div className="tb-fade-right" />
+                <div className="tb-track tb-track--forward">
+                    {[...row1, ...row1].map((c, i) => (
+                        <LogoItem key={`r1-${i}`} client={c} />
+                    ))}
+                </div>
+            </div>
+
+            {/* Row 2 — scroll right → left */}
+            <div className="tb-track-wrapper" style={{ marginTop: '1.5rem' }}>
+                <div className="tb-fade-left" />
+                <div className="tb-fade-right" />
+                <div className="tb-track tb-track--reverse">
+                    {[...row2, ...row2].map((c, i) => (
+                        <LogoItem key={`r2-${i}`} client={c} />
+                    ))}
+                </div>
+            </div>
+
+            <div className="container">
+                <p className="tb-count-note">
+                    +30 proyectos ejecutados &mdash; Web3, marcas, venues y partners corporativos
+                </p>
+            </div>
+        </section>
+    );
+};
+
+export default TrustedBy;
+```
+
+## Styling Classes
+
+### Section Classes
+- `.trusted-by-section` - Main section container
+- `.tb-eyebrow` - Overline text style
+- `.tb-subtitle` - Subtitle text below heading
+- `.tb-count-note` - Bottom note text
+
+### Animation Classes
+- `.tb-track-wrapper` - Container for scrolling track
+- `.tb-track` - Scrolling container
+- `.tb-track--forward` - Left-to-right scroll animation
+- `.tb-track--reverse` - Right-to-left scroll animation
+- `.tb-fade-left` - Left edge fade overlay
+- `.tb-fade-right` - Right edge fade overlay
+
+### Logo Classes
+- `.tb-logo-item` - Individual logo container
+- `.tb-logo-img` - Logo image styling
+
+## Animation Details
+
+The infinite scroll is achieved through:
+
+1. **Array Duplication**: Each row's client array is duplicated (`[...row1, ...row1]`)
+2. **CSS Animations**: Keyframe animations move the track horizontally
+3. **Seamless Loop**: When the first set finishes, the duplicate creates continuity
+4. **Opposite Directions**: Row 1 moves right, Row 2 moves left for visual interest
+
+## Dependencies
+
+This component has no external dependencies beyond React.
+
+## Enabling the Component
+
+To enable this component in your application:
+
+<Steps>
+  <Step title="Uncomment in App.jsx">
+    Remove the comment wrapper around the TrustedBy import and usage in `src/App.jsx`.
+    
+    ```jsx App.jsx
+    import TrustedBy from './components/TrustedBy';
+    
+    function App() {
+      return (
+        <div className="App">
+          {/* ... other components ... */}
+          <TrustedBy />
+          {/* ... other components ... */}
+        </div>
+      );
+    }
+    ```
+  </Step>
+  
+  <Step title="Position in Layout">
+    The component is currently commented out between WorkPacks and About components. Consider where it fits best in your page flow.
+  </Step>
+  
+  <Step title="Verify Assets">
+    Ensure all 18 logo images exist in `/public/assets/empresas/` directory.
+  </Step>
+</Steps>
+
+## Responsive Behavior
+
+- **Desktop**: Full-width scrolling tracks with multiple logos visible
+- **Tablet**: Scrolling continues smoothly, fewer logos visible simultaneously
+- **Mobile**: Maintains smooth infinite scroll with adjusted logo sizes
+
+<Info>
+The component is production-ready but currently disabled. All client logos and animations are fully implemented.
+</Info>
