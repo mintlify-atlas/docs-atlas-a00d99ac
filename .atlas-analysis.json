@@ -1,0 +1,89 @@
+{
+  "projectType": "frontend",
+  "projectName": "Plugin Agency",
+  "projectDescription": "A modern React landing page for a digital agency specializing in web development, branding, automation, and digital solutions",
+  "theme": "almond",
+  "primaryColor": "#4ade80",
+  "lightColor": "#86efac",
+  "darkColor": "#22c55e",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "installation"
+            ]
+          },
+          {
+            "group": "Components",
+            "pages": [
+              "components/navbar",
+              "components/hero",
+              "components/problem",
+              "components/method",
+              "components/services",
+              "components/workpacks",
+              "components/about",
+              "components/process",
+              "components/faq",
+              "components/contact",
+              "components/footer"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/deployment",
+              "guides/configuration",
+              "guides/styling",
+              "guides/environment-variables"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Backend",
+            "pages": [
+              "api/send-email",
+              "api/recaptcha"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Responsive single-page React application",
+    "Video hero background with dynamic content",
+    "Contact form with Nodemailer integration",
+    "Google ReCAPTCHA v2 spam protection",
+    "Calendly integration for scheduling",
+    "Vercel Analytics integration",
+    "Modern component-based architecture",
+    "Mobile-responsive hamburger navigation",
+    "Custom CSS with CSS variables",
+    "Team showcase section with avatars"
+  ],
+  "publicApiSurface": [
+    "POST /api/send-email - Send contact form emails",
+    "Navbar component - Responsive navigation",
+    "Hero component - Video background hero section",
+    "Problem component - Problem statement section",
+    "Method component - Methodology display",
+    "Services component - Services showcase with icons",
+    "WorkPacks component - Work package offerings",
+    "About component - Team member profiles",
+    "Process component - Process workflow",
+    "FAQ component - Frequently asked questions",
+    "Contact component - Contact form with validation",
+    "Footer component - Page footer"
+  ]
+}
